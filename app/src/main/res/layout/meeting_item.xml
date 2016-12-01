@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:elevation="6dp"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/list_item">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/meeting_details"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="30dp"
+                android:text="Description"
+                android:textStyle="bold"
+                />
+           <android.support.v7.widget.RecyclerView
+               android:layout_width="wrap_content"
+               android:layout_height="150dp"
+               android:layout_below="@+id/meeting_details"
+               android:id="@+id/meeting_images_recyclerview"
+               android:orientation="horizontal"
+               android:layout_marginTop="15dp"
+               android:visibility="gone"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Creator"
+                android:id="@+id/meeting_creator"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="8dp"
+                android:textStyle="bold"
+                android:layout_below="@+id/meeting_images_recyclerview"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Created"
+                android:id="@+id/meeting_created"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="8dp"
+                android:textStyle="bold"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/meeting_images_recyclerview"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/meeting_location"
+
+                android:layout_below="@+id/meeting_creator"
+                android:layout_marginTop="10dp"
+                android:text="View Location"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/meeting_id"
+                android:visibility="invisible"/>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</RelativeLayout>

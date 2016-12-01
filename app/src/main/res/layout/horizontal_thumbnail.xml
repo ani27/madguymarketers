@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.vp6.anish.madguysmarketers.SquareLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="150dp"
+    android:layout_height="150dp"
+    android:orientation="vertical"
+    android:padding="1dp"
+    android:id="@+id/gallery_layout"
+    android:background="@drawable/selector_row">
+
+
+
+    <ImageView
+        android:id="@+id/horizontal_thumbnail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop" />
+
+   <!--<ImageButton-->
+       <!--android:layout_width="35dp"-->
+       <!--android:layout_height="35dp"-->
+       <!--android:layout_alignParentTop="true"-->
+       <!--android:layout_alignParentRight="true"-->
+       <!--android:id="@+id/close_button"-->
+       <!--android:src="@android:drawable/ic_menu_close_clear_cancel"/>-->
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar_images"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:progressDrawable="@drawable/circular_progress_bar"
+        android:background="@drawable/circle_shape"
+        android:visibility="gone"
+        />
+
+
+</com.vp6.anish.madguysmarketers.SquareLayout>
