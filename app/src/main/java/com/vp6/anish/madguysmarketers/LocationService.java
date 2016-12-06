@@ -71,9 +71,9 @@ public class LocationService extends Service {
             return START_NOT_STICKY ;
         }
         Log.i("location manager","one");
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5*60*1000, 10, listener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 4*60*1000, 0, listener);
         Log.i("location manager","two");
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5*60*1000, 10, listener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 4*60*1000, 0, listener);
        // locationManager.requestLocationUpdates();
        // Toast.makeText(this,"Start Service 2", Toast.LENGTH_LONG).show();
 
@@ -97,7 +97,7 @@ public class LocationService extends Service {
         boolean isSignificantlyOlder = timeDelta < -FIVE_MINUTES;
         boolean isNewer = timeDelta > 0;
 
-        // If it's been more than two minutes since the current location, use the new location
+        // If it's been more than five minutes since the current location, use the new location
         // because the user has likely moved
         if (isSignificantlyNewer) {
             return true;

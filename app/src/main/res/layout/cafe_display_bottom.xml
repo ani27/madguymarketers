@@ -290,7 +290,7 @@
             android:orientation="horizontal">
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="match_parent"
                 android:layout_weight="3.5"
                 android:text="Cafe Photos"
                 android:id="@+id/cafe_photo_number"
@@ -306,7 +306,7 @@
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:weightSum="5"
             android:layout_marginTop="5dp"
@@ -314,7 +314,7 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="match_parent"
                 android:layout_weight="3.5"
                 android:text="Agreement Photos"
                 android:id="@+id/partnership_agreement_photo_number"

@@ -76,6 +76,7 @@ public class CafeDisplayActivity extends AppCompatActivity {
     TextView location;
 
     ImageView ownerphoto;
+    ImageView cafephoto;
     ProgressBar progressBar;
 
     RelativeLayout relativeLayout;
@@ -84,8 +85,8 @@ public class CafeDisplayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cafe_display);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setTitle("Cafe");
+       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+       getSupportActionBar().setTitle("Cafe");
         cafephotoaddress = new ArrayList<>();
         agreementphotoaddress = new ArrayList<>();
         cafephotoupload = new ArrayList<>();
@@ -105,6 +106,7 @@ public class CafeDisplayActivity extends AppCompatActivity {
         number_of_agreement_photos = (TextView)findViewById(R.id.partnership_agreement_photo_number);
         number_of_cafe_photos = (TextView)findViewById(R.id.cafe_photo_number);
         ownerphoto = (ImageView)findViewById(R.id.owner_photo2);
+        cafephoto = (ImageView)findViewById(R.id.cafe_image);
         progressBar = (ProgressBar)findViewById(R.id.progressBar_display_cafe);
         relativeLayout = (RelativeLayout)findViewById(R.id.display_cafe);
 
@@ -146,18 +148,22 @@ public class CafeDisplayActivity extends AppCompatActivity {
                                 JsonArray agreement_photo = result.get("agreement_photos").getAsJsonArray();
 
 
-
                                 cafename.setText(name);
+                                if(!owner.equals(""))
                                 ownername.setText(owner);
+                                if(!state_.equals(""))
                                 state.setText(state_);
+                                if(!city_.equals(""))
                                 city.setText(city_);
-                                if(!pincode_.toString().equals("0"))
+                                if(!pincode_.toString().equals(""))
                                     pincode.setText(pincode_.toString());
-                                else
-                                    pincode.setText("");
+                                if (!address_.equals(""))
                                 address.setText(address_);
+                                if (!phone.equals(""))
                                 phone_number.setText(phone);
+                                if (!hardware_given.equals(""))
                                 hardware.setText(hardware_given);
+                                if (!cafe_status.equals(""))
                                 cafestatus.setText(cafe_status);
                                 lat =(lat_);
                                 lng =(lng_);
@@ -198,6 +204,18 @@ public class CafeDisplayActivity extends AppCompatActivity {
                                     cafe_photos.setVisibility(View.VISIBLE);
                                     number_of_cafe_photos.setText(cafephotoaddress.size() + " photos added");
 
+                                    Glide.with(CafeDisplayActivity.this).load(cafephotoaddress.get(0))
+                                            .thumbnail(0.5f)
+                                            .crossFade()
+                                            .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                                            .into(cafephoto);
+
+
+                                }
+                                else
+                                {
+                                    number_of_cafe_photos.setText( "0 cafe photos added");
+
                                 }
 
                                 if(agreementphotoaddress.size() > 0)
@@ -209,6 +227,11 @@ public class CafeDisplayActivity extends AppCompatActivity {
                                     agreement_photos.setAdapter(horizontalAdapter);
                                     agreement_photos.setVisibility(View.VISIBLE);
                                     number_of_agreement_photos.setText(agreementphotoaddress.size() + " photos added");
+
+                                }
+                                else
+                                {
+                                    number_of_agreement_photos.setText("0 agreement photos added");
 
                                 }
                             }

@@ -72,7 +72,7 @@ public class LocationDisplayActivity extends FragmentActivity implements OnMapRe
         // Add a marker in Sydney and move the camera
         LatLng location = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
         mMap.addMarker(new MarkerOptions().position(location).title("Marked Location"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location ,10.0f));
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions

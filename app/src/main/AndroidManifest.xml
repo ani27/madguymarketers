@@ -83,7 +83,7 @@
         <activity android:name=".ShowUserActivity" />
         <activity android:name=".UserAuthenticateActivity" />
         <activity android:name=".CafeDisplayActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            />
         <activity android:name=".CoachingDisplayActivity" />
         <activity
             android:name=".EditCafeActivity"

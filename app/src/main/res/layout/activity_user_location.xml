@@ -36,27 +36,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/user_details"
-            android:onClick="user_detail"
+            android:onClick="userdetail"
             android:layout_alignParentRight="true"
+            android:src="@drawable/settings"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="10dp"
             android:layout_marginRight="10dp"
-            map:backgroundTint="@color/colorPrimary"
+            map:backgroundTint="@color/white"
             tools:background="@android:drawable/ic_menu_info_details" />
 
-        <EditText
+        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:inputType="text"
             android:ems="10"
             android:hint="Meetings"
             android:id="@+id/user_meetings"
+            android:layout_marginTop="10dp"
             android:layout_below="@+id/date"
             android:layout_alignLeft="@+id/date"
             android:layout_alignStart="@+id/date" />
-        <EditText
+        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:inputType="text"
             android:ems="10"
             android:hint="Km. Travelled"
@@ -64,6 +66,20 @@
             android:layout_below="@+id/user_meetings"
             android:layout_alignLeft="@+id/user_meetings"
             android:layout_alignStart="@+id/user_meetings" />
+
+        <CheckedTextView
+            android:text="Show path"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="setDecodedPath"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="21dp"
+            android:id="@+id/checkedTextView"
+            android:checked="false"
+            android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+            />
+
     </RelativeLayout>
 
 </RelativeLayout>

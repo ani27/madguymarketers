@@ -86,6 +86,7 @@ public class MemberProfile extends AppCompatActivity implements  ProfileCallLogs
         {
             status.setVisibility(View.GONE);
         }
+Log.i("Member id",getString(R.string.url).concat("call/" + id + "/"));
 
 //        if (id.equals(SessionManager.getjwt(MemberProfile.this)))
 //        {

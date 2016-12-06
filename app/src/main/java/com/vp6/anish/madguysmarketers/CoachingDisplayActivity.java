@@ -93,7 +93,7 @@ public class CoachingDisplayActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_coaching_display);
+        setContentView(R.layout.coaching_display);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Coaching");
@@ -121,7 +121,7 @@ public class CoachingDisplayActivity extends AppCompatActivity {
         address = (TextView)findViewById(R.id.address_display);
         number_of_agreement_photos = (TextView)findViewById(R.id.partnership_agreement_photo_number);
         number_of_coaching_photos = (TextView)findViewById(R.id.coaching_photo_number);
-        number_of_coaching_registration_photos = (TextView)findViewById(R.id.coaching_photo_number);
+        number_of_coaching_registration_photos = (TextView)findViewById(R.id.registration_photo_number);
         number_of_studentlist_photos = (TextView)findViewById(R.id.studentlist_photo_number);
         total_students = (TextView)findViewById(R.id.total_student_display);
         students_having_mobile = (TextView)findViewById(R.id.total_students_having_mobile_phone_display);
@@ -136,7 +136,7 @@ public class CoachingDisplayActivity extends AppCompatActivity {
             if(!getIntent().getExtras().getString("id").isEmpty()){
                 id = getIntent().getExtras().getString("id").trim();
                 progressBar.setVisibility(View.VISIBLE);
-                relativeLayout.setVisibility(View.INVISIBLE);
+               // relativeLayout.setVisibility(View.INVISIBLE);
 
 
 
@@ -178,32 +178,36 @@ public class CoachingDisplayActivity extends AppCompatActivity {
 
 
                                     coachingname.setText(name);
+                                    if(!director.equals(""))
                                     directorname.setText(director);
+                                    if (!state.equals(""))
                                     state.setText(state_);
+                                    if (!city.equals(""))
                                     city.setText(city_);
-                                    if(!pincode_.toString().equals("0"))
+                                    if(!pincode_.toString().equals(""))
                                     pincode.setText(pincode_.toString());
-                                    else
-                                    pincode.setText("");
+
+                                    if (!address_.equals(""))
                                     address.setText(address_);
+                                    if (!phone.equals(""))
                                     phone_number.setText(phone);
+                                    if (!hardware_given.equals(""))
                                     hardware.setText(hardware_given);
+                                    if (!coaching_status.equals(""))
                                     coachingstatus.setText(coaching_status);
                                     lat =(lat_);
                                     lng =(lng_);
+                                    if (exam_teaching.equals(""))
                                     examteaching.setText(exam_teaching);
                                     if(!totalstudent.toString().equals("0"))
                                     total_students.setText(totalstudent.toString());
-                                    else
-                                    total_students.setText("");
+
                                     if(!totalstudentshavingphone.toString().equals(""))
                                     students_having_mobile.setText(totalstudentshavingphone.toString());
-                                    else
-                                    students_having_mobile.setText("");
 
 
 
-                                    relativeLayout.setVisibility(View.VISIBLE);
+                                   // relativeLayout.setVisibility(View.VISIBLE);
                                     progressBar.setVisibility(View.GONE);
 
                                     for(int i = 0;  i<coaching_photo.size(); i++)
@@ -252,6 +256,9 @@ public class CoachingDisplayActivity extends AppCompatActivity {
                                         coaching_photos.setAdapter(horizontalAdapter);
                                         coaching_photos.setVisibility(View.VISIBLE);
                                         number_of_coaching_photos.setText(coachingphotoaddress.size() + " photos added");
+                                    }
+                                    else{
+                                        number_of_coaching_photos.setText("0 coaching photos added");
 
                                     }
 
@@ -264,7 +271,9 @@ public class CoachingDisplayActivity extends AppCompatActivity {
                                         agreement_photos.setAdapter(horizontalAdapter);
                                         agreement_photos.setVisibility(View.VISIBLE);
                                         number_of_agreement_photos.setText(agreementphotoaddress.size() + " photos added");
-
+                                    }
+                                    else{
+                                        number_of_agreement_photos.setText("0 agreement photos added");
                                     }
 
 
@@ -277,7 +286,9 @@ public class CoachingDisplayActivity extends AppCompatActivity {
                                         coaching_registration_photos.setAdapter(horizontalAdapter);
                                         coaching_registration_photos.setVisibility(View.VISIBLE);
                                         number_of_coaching_registration_photos.setText(coachingregistrationphotoaddress.size() + " photos added");
-
+                                    }
+                                    else{
+                                        number_of_coaching_registration_photos.setText( "0 registration photos added");
                                     }
 
 
@@ -292,6 +303,10 @@ public class CoachingDisplayActivity extends AppCompatActivity {
                                         number_of_studentlist_photos.setText(studentlistphotoaddress.size() + " photos added");
 
                                     }
+                                    else {
+                                        number_of_studentlist_photos.setText( "0 student list photos added");
+
+                                    }
 
 
 
@@ -301,7 +316,7 @@ public class CoachingDisplayActivity extends AppCompatActivity {
 
                                     Toast.makeText(CoachingDisplayActivity.this,"Failed, Try again later", Toast.LENGTH_LONG).show();
                                     progressBar.setVisibility(View.GONE);
-                                    relativeLayout.setVisibility(View.GONE);
+                                    //relativeLayout.setVisibility(View.GONE);
 
                                     Log.i("EXCEPTION",e1.getMessage());
 

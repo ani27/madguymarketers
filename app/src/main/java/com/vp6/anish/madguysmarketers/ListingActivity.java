@@ -40,6 +40,7 @@ import android.widget.Toast;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.JsonAdapter;
+import com.google.maps.android.clustering.algo.Algorithm;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
@@ -225,6 +226,7 @@ public class ListingActivity extends AppCompatActivity
          allData_type = new ArrayList<>();
          allData_id = new ArrayList<>();
          allData_imageurl = new ArrayList<>();
+         //Log.i("JWT", SessionManager.getjwt(this));
 
 
          if (isNetworkAvailable()) {
@@ -240,6 +242,7 @@ public class ListingActivity extends AppCompatActivity
                          public void onCompleted(Exception e, JsonObject result) {
                              // do stuff with the result or error
                              try {
+
                                  JsonArray listings = result.get("my_listings").getAsJsonArray();
                                  JsonArray all_listings = result.get("listings").getAsJsonArray();
 
@@ -265,8 +268,10 @@ public class ListingActivity extends AppCompatActivity
                                      allData_name.add(listing.get("name").getAsString());
                                      allData_id.add(listing.get("_id").getAsString());
                                      allData_type.add(listing.get("listing_type").getAsString());
-                                     if (!listing.get("photo").getAsString().equals(""))
+                                     if (!listing.get("photo").getAsString().equals("")) {
                                          allData_imageurl.add(getString(R.string.media_url).concat(listing.get("photo").getAsString()));
+                                      //Log.i("Imageurl",getString(R.string.media_url).concat(listing.get("photo").getAsString()));
+                                     }
                                      else
                                          allData_imageurl.add("");
 

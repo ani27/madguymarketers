@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/display_coaching"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.vp6.anish.madguysmarketers.CoachingDisplayActivity"
+    tools:showIn="@layout/coaching_display"
+    >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:nestedScrollingEnabled="true">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="2dp">
+            <Button
+                android:text="Add Photos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:onClick="addphotos" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:onClick="editcoaching"
+                android:text="Edit"
+                android:id="@+id/edit_query"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:weightSum="5"
+                android:id="@+id/complete_director_information"
+                android:layout_below="@+id/edit_query"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="10dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:weightSum="2"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:text="Director Name"
+                        android:textSize="17dp"
+                        android:id="@+id/director_name_display"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="5dp"
+                        android:textStyle="bold"
+                        android:elevation="3dp"
+                        android:layout_weight="1"
+                        />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:text="Director Number"
+                        android:textSize="17dp"
+                        android:id="@+id/phone_number_display"
+                        android:layout_marginBottom="5dp"
+                        android:gravity="center_vertical"
+                        android:textStyle="bold"
+                        android:elevation="3dp"
+                        android:layout_weight="1"
+                        />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="95dp"
+                    android:id="@+id/director_photo2"
+
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_weight="3"
+                    android:src="@drawable/user"
+                    android:onClick="ownerphoto"
+                    android:elevation="3dp"
+                    />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/darker_gray"
+                android:id="@+id/phone_number_complete_"
+                android:layout_below="@+id/complete_director_information"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:weightSum="5"
+                android:id="@+id/state_complete"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_below="@id/phone_number_complete_"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="State"
+                    android:textSize="17dp"
+                    android:id="@+id/state_text"
+
+                    android:textStyle="bold"
+                    android:elevation="3dp"
+                    android:layout_weight="3.5"
+                    android:gravity="center_vertical"
+
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="  "
+                    android:textSize="17dp"
+                    android:id="@+id/state_display"
+
+                    android:textStyle="bold"
+                    android:elevation="3dp"
+                    android:layout_weight="1.5"
+                    android:gravity="center_vertical"
+                    />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/darker_gray"
+                android:id="@+id/state_complete_"
+                android:layout_below="@+id/state_complete"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:weightSum="5"
+                android:layout_below="@+id/state_complete_"
+                android:id="@+id/city_complete"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="City"
+                    android:textSize="17dp"
+                    android:id="@+id/city_text"
+
+                    android:textStyle="bold"
+                    android:elevation="3dp"
+                    android:layout_weight="3.5"
+                    android:gravity="center_vertical"
+
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text=" "
+                    android:textSize="17dp"
+                    android:id="@+id/city_diplay"
+                    android:textStyle="bold"
+                    android:elevation="3dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/darker_gray"
+                android:id="@+id/city_complete_"
+                android:layout_below="@+id/city_complete"/>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:weightSum="2"
+                android:id="@+id/map_complete"
+                android:layout_below="@+id/city_complete_"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="Map Location"
+                    android:textSize="17dp"
+                    android:id="@+id/map_text"
+                    android:textStyle="bold"
+                    android:elevation="3dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+
+                    />
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="View on Map"
+                    android:textSize="17dp"
+                    android:id="@+id/map_diplay"
+
+                    android:elevation="3dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:onClick="viewonmap_coaching"
+
+                    />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/darker_gray"
+                android:id="@+id/map_complete_"
+                android:layout_below="@+id/map_complete"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:weightSum="5"
+                android:id="@+id/hardware_complete"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_below="@+id/map_complete_"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="Hardware"
+                    android:textSize="17dp"
+                    android:id="@+id/hardware_text"
+
+                    android:textStyle="bold"
+                    android:elevation="3dp"
+                    android:layout_weight="3.5"
+                    android:gravity="center_vertical"
+
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="  "
+                    android:textSize="17dp"
+                    android:id="@+id/hardware_display"
+
+                    android:textStyle="bold"
+                    android:elevation="3dp"
+                    android:layout_weight="1.5"
+                    android:gravity="center_vertical"
+                    />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/darker_gray"
+                android:id="@+id/hardware_complete_"
+                android:layout_below="@+id/hardware_complete"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:weightSum="5"
+                android:layout_below="@+id/hardware_complete_"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:id="@+id/total_student_complete"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="Total Student"
+                    android:textSize="17dp"
+                    android:id="@+id/total_student_text"
+                    android:textStyle="bold"
+                    android:elevation="3dp"
+                    android:layout_weight="3"
+                    android:gravity="center_vertical"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="  "
+                    android:textSize="17dp"
+                    android:id="@+id/total_student_display"
+                    android:textStyle="bold"
+                    android:elevation="3dp"
+                    android:layout_weight="2"
+                    android:gravity="center_vertical" />
+            </LinearLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/darker_gray"
+                android:id="@+id/total_student_complete_"
+                android:layout_below="@+id/total_student_complete"/>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:weightSum="5"
+                android:id="@+id/total_students_having_mobile_phone_complete"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_below="@+id/total_student_complete_"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="Students having Phone"
+                    android:textSize="17dp"
+                    android:id="@+id/total_students_having_mobile_phone_text"
+                    android:textStyle="bold"
+                    android:elevation="3dp"
+                    android:layout_weight="2"
+                    android:gravity="center_vertical"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="  "
+                    android:textSize="17dp"
+                    android:id="@+id/total_students_having_mobile_phone_display"
+                    android:textStyle="bold"
+                    android:elevation="3dp"
+                    android:layout_weight="3"
+                    android:gravity="center_vertical"
+                    />
+            </LinearLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/darker_gray"
+                android:id="@+id/total_students_having_mobile_phone_complete_"
+                android:layout_below="@+id/total_students_having_mobile_phone_complete"/>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:weightSum="5"
+                android:id="@+id/exam_teaching_complete"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_below="@+id/total_students_having_mobile_phone_complete_"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="Exam Teaching"
+                    android:textSize="17dp"
+                    android:id="@+id/exam_teaching_text"
+                    android:textStyle="bold"
+                    android:elevation="3dp"
+                    android:layout_weight="3"
+                    android:gravity="center_vertical"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="  "
+                    android:textSize="17dp"
+                    android:id="@+id/exam_teaching_display"
+
+                    android:textStyle="bold"
+                    android:elevation="3dp"
+                    android:layout_weight="2"
+                    android:gravity="center_vertical"
+                    />
+            </LinearLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/darker_gray"
+                android:id="@+id/exam_teaching_complete_"
+                android:layout_below="@+id/exam_teaching_complete"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="Photo Gallery"
+                android:id="@+id/photo_gallery_text"
+                android:layout_below="@+id/exam_teaching_complete_"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/photo_gallery_text"
+                android:weightSum="4"
+                android:id="@+id/photo_gallery"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:weightSum="5"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3.5"
+                        android:text="Coaching Photos"
+                        android:id="@+id/coaching_photo_number"
+                        android:gravity="center"/>
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_weight="1.5"
+                        android:orientation="horizontal"
+                        android:id="@+id/coaching_photo_recyclerview"
+                        android:visibility="gone"/>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:weightSum="5"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3.5"
+                        android:text="Agreement Photos"
+                        android:id="@+id/partnership_agreement_photo_number"
+                        android:gravity="center"/>
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_weight="1.5"
+                        android:orientation="horizontal"
+                        android:id="@+id/partnership_agreement_photo_recyclerview"
+                        android:visibility="gone"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:weightSum="5"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3.5"
+                        android:text="Student List Photos"
+                        android:id="@+id/studentlist_photo_number"
+                        android:gravity="center"/>
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_weight="1.5"
+                        android:orientation="horizontal"
+                        android:id="@+id/studentlist_photo_recyclerview"
+                        android:visibility="gone"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:weightSum="5"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3.5"
+                        android:text="Registration Photos"
+                        android:id="@+id/registration_photo_number"
+                        android:gravity="center"/>
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_weight="1.5"
+                        android:orientation="horizontal"
+                        android:id="@+id/registration_photo_recyclerview"
+                        android:visibility="gone"/>
+                </LinearLayout>
+            </LinearLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/darker_gray"
+                android:id="@+id/partnership_agreement_photo_recyclerview_"
+                android:layout_below="@+id/photo_gallery"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:weightSum="2"
+                android:layout_below="@+id/partnership_agreement_photo_recyclerview_"
+                android:id="@+id/complete_meeting"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="Meetings"
+                    android:textSize="17dp"
+                    android:id="@+id/meeting_text"
+                    android:textStyle="bold"
+                    android:elevation="3dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    />
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="Browse"
+                    android:textSize="17dp"
+                    android:id="@+id/browse_meeting"
+                    android:textStyle="bold"
+                    android:elevation="3dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:onClick="browsemeetingscoaching"
+                    />
+            </LinearLayout>
+
+
+
+        </RelativeLayout>
+    </ScrollView>
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar_display_coaching"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:progressDrawable="@drawable/circular_progress_bar"
+        android:background="@drawable/circle_shape" />
+</RelativeLayout>
+
+
