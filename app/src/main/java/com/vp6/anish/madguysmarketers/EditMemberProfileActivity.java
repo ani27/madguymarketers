@@ -207,7 +207,6 @@ public class EditMemberProfileActivity extends AppCompatActivity {
             //indicate output X and Y
             cropIntent.putExtra("outputX", 128);
             cropIntent.putExtra("outputY", 128);
-
             //retrieve data on return
             cropIntent.putExtra("return-data", true);
             File f = createNewFile("CROP_");

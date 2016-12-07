@@ -11,10 +11,11 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_centerInParent="true"
+        android:layout_centerInParent="false"
         android:hint="Mobile Number"
         android:singleLine="true"
         android:inputType="number"
+        android:layout_marginTop="100dp"
         android:id="@+id/login_number"
         android:elevation="3dp"/>
     <EditText
@@ -26,17 +27,64 @@
         android:id="@+id/login_name"
         android:layout_below="@+id/login_number"
         android:elevation="3dp"/>
+    <TextView
+        android:text="Working Hours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/login_name"
+        android:layout_alignParentLeft="true"
+        android:id="@+id/textView2"
+        />
 
 
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="time"
+        android:textSize="18sp"
+        android:text="8:00 AM"
+        android:id="@+id/working_from"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:layout_toRightOf="@+id/textView2"
+        android:layout_below="@+id/login_name"
+        android:layout_marginLeft="30dp"
+         />
+    <TextView
+        android:text="to"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView3"
+        android:focusable="false"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_below="@+id/login_name"
+        android:layout_toLeftOf="@+id/working_to"
+        android:focusableInTouchMode="false"
+        android:textSize="18sp"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="time"
+        android:text="5:00 pm"
+        android:id="@+id/working_to"
+        android:layout_below="@+id/login_name"
+        android:layout_alignParentRight="true"
+         />
     <Button
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/login_name"
+        android:layout_marginTop="15dp"
+        android:layout_below="@+id/working_to"
         android:background="@android:color/black"
         android:text="Login"
         android:onClick="sendnumber"
         android:textColor="@android:color/white"
         android:id="@+id/login_button"/>
-
 </RelativeLayout>

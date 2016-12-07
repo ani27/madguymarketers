@@ -19,6 +19,8 @@ public class OtpActivity extends AppCompatActivity {
     String id;
     String phone_number;
     String name;
+    long workingto;
+    long workingfrom;
 
     ArrayList<String>output;
 
@@ -30,6 +32,8 @@ public class OtpActivity extends AppCompatActivity {
         id = getIntent().getExtras().getString("id");
         phone_number = getIntent().getExtras().getString("number");
         name =  getIntent().getExtras().getString("name");
+        workingfrom = getIntent().getExtras().getLong("workingfrom");
+        workingto = getIntent().getExtras().getLong("workingto");
         output = new ArrayList<>();
 
         Log.i("ID", id);
@@ -52,10 +56,6 @@ public class OtpActivity extends AppCompatActivity {
                         // do stuff with the result or error
                         try {
 
-                            Log.i("JWT", result.get("token").getAsString());
-                            Log.i("Admin", result.get("admin").getAsString());
-                            Log.i("Authenticate", result.get("authenticated").getAsString());
-                            Log.i("Authorized", result.get("authorized").getAsString());
                             output.add(result.get("admin").getAsString());
                             output.add(result.get("authenticated").getAsString());
                             output.add(result.get("authorized").getAsString());
@@ -89,6 +89,8 @@ public class OtpActivity extends AppCompatActivity {
 
                             if (output.get(1).equals("true")) {
                                 SessionManager.setId(OtpActivity.this,id);
+                                SessionManager.setWorkingFrom(OtpActivity.this,workingfrom);
+                                SessionManager.setWorkingTo(OtpActivity.this,workingto);
                                 Intent intent = new Intent(OtpActivity.this, PermissionActivity.class);
                                 startActivity(intent);
                                 finish();

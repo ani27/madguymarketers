@@ -27,7 +27,8 @@ public class SessionManager {
     // All Shared Preferences Keys
     private static final String IS_LOGIN = "IsLoggedIn";
     private static final String LAST_CALL_LOGS = "lastCallLogs";
-
+    private static final String WORKING_FROM = "workingFrom";
+    private static final String WORKING_TO = "workingTo";
     private static final String IS_AUTHENTICATED = "IsAuthenticated";
     private static final String IS_AUTHORIZED = "IsAuthorized";
     private static final String IS_ADMIN = "IsAdmin";
@@ -146,5 +147,28 @@ public class SessionManager {
         return savedSession.getLong(LAST_CALL_LOGS, 1477398133);
     }
 
+    public static void setWorkingFrom(Context context, long workingfrom) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(PREF_NAME, Context.MODE_APPEND).edit();
+        editor.putLong(WORKING_FROM, workingfrom);
+        editor.commit();
+    }
 
+    public static long getWorkingFrom(Context context) {
+
+        SharedPreferences savedSession = context.getSharedPreferences(PREF_NAME, Context.MODE_APPEND);
+        return savedSession.getLong(WORKING_FROM, 8*60);
+    }
+
+
+    public static void setWorkingTo(Context context, long workingto) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(PREF_NAME, Context.MODE_APPEND).edit();
+        editor.putLong(WORKING_TO, workingto);
+        editor.commit();
+    }
+
+    public static long getWorkingTo(Context context) {
+
+        SharedPreferences savedSession = context.getSharedPreferences(PREF_NAME, Context.MODE_APPEND);
+        return savedSession.getLong(WORKING_TO, 17*60);
+    }
 }
