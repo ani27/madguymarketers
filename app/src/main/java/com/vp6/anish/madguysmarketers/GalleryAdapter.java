@@ -2,12 +2,10 @@ package com.vp6.anish.madguysmarketers;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -91,7 +89,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
 
         if(mSparseBooleanArray.get(temp))
         {
-            holder.thumbnail.setColorFilter(R.color.yellow);
+            holder.thumbnail.setColorFilter(R.color.green_500);
         }
         else
         {
@@ -107,7 +105,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
                         count++;
                         mSparseBooleanArray.put(temp, !mSparseBooleanArray.get(temp));
                            if (mSparseBooleanArray.get(temp)) {
-                            holder.thumbnail.setColorFilter(R.color.yellow);
+                            holder.thumbnail.setColorFilter(R.color.green_500);
                            } else {
                            holder.thumbnail.setColorFilter(null);
                            }
@@ -120,7 +118,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
                     count--;
                     mSparseBooleanArray.put(temp, !mSparseBooleanArray.get(temp));
                     if (mSparseBooleanArray.get(temp)) {
-                        holder.thumbnail.setColorFilter(R.color.yellow);
+                        holder.thumbnail.setColorFilter(R.color.green_500);
                     } else {
                         holder.thumbnail.setColorFilter(null);
                     }

@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/root">
+    android:id="@+id/root"
+    android:padding="24dp">
 
 
     <TextView
@@ -18,6 +19,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:maxLines="10"
         android:hint="Meeting Description"
         android:id="@+id/description"
         android:layout_below="@+id/add_meeting"
@@ -27,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:text="0 photos added"
         android:id="@+id/numberofphotos"
         android:layout_below="@+id/description"
@@ -40,30 +42,30 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Location not added "
         android:id="@+id/location_text"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:layout_below="@+id/description"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
     <Button
-        android:layout_width="150dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Add Photos"
         android:id="@+id/add_meeting_photos"
         android:layout_below="@+id/numberofphotos"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="15dp"/>
 
-    <Button
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="Add Location"
-        android:id="@+id/add_exact_location"
-        android:layout_alignTop="@+id/add_meeting_photos"
-        android:layout_alignRight="@+id/location_text"
-        android:layout_alignEnd="@+id/location_text"
-        />
+    <!--<Button-->
+        <!--android:layout_width="150dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Add Location"-->
+        <!--android:id="@+id/add_exact_location"-->
+        <!--android:layout_alignTop="@+id/add_meeting_photos"-->
+        <!--android:layout_alignRight="@+id/location_text"-->
+        <!--android:layout_alignEnd="@+id/location_text"-->
+        <!--/>-->
 
 
 </RelativeLayout>

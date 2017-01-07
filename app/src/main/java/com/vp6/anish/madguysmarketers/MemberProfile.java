@@ -1,22 +1,20 @@
 package com.vp6.anish.madguysmarketers;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -33,7 +31,7 @@ import com.koushikdutta.ion.Ion;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MemberProfile extends AppCompatActivity implements  ProfileCallLogsFragment.OnFragmentInteractionListener{
+public class MemberProfile extends AppCompatActivity implements  ProfileCallLogsFragment.OnFragmentInteractionListener, ProfileMeetingsFragment.OnFragmentInteractionListener{
 
     String name;
     String number;
@@ -48,7 +46,14 @@ public class MemberProfile extends AppCompatActivity implements  ProfileCallLogs
     Button status;
     FloatingActionButton profile_edit;
     ProfileCallLogsFragment profileCallLogsFragment;
-   // ProfileMeetingsFragment profileMeetingsFragment;
+    ProfileMeetingsFragment profileMeetingsFragment;
+    ArrayList<String>meetingphotoaddress;
+    TextView numberofphotos;
+    TextView location;
+    int MeetingPhoto = 301;
+    int MeetingMap = 302;
+    String lat_meeting="";
+    String lng_meeting="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,8 +74,85 @@ public class MemberProfile extends AppCompatActivity implements  ProfileCallLogs
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
         profileCallLogsFragment = new ProfileCallLogsFragment();
+        profileMeetingsFragment = new ProfileMeetingsFragment();
         Log.i("Error check", "Flag one");
         status = (Button)findViewById(R.id.status);
+        status.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(SessionManager.getIsAuthorized(MemberProfile.this)) {
+                    AlertDialog alertDialog = new AlertDialog.Builder(MemberProfile.this)
+                            .setTitle("Status")
+                            .setMessage("The user is Authorized")
+                            .setPositiveButton("Change", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // continue with delete
+                                    dialog.dismiss();
+                                    new AlertDialog.Builder(MemberProfile.this)
+                                            .setTitle("Change Authorization")
+                                            .setMessage("Are you sure you want to deauthorize this Member?")
+                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    // continue with delete
+
+                                                    Toast.makeText(MemberProfile.this, "Server does not support this yet", Toast.LENGTH_SHORT).show();
+                                                }
+                                            })
+                                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    // do nothing
+                                                    dialog.dismiss();
+                                                }
+                                            })
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .show();
+                                }
+                            })
+                            .setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                    dialog.dismiss();
+                                }
+                            })
+                            .show();
+                }
+                else{
+                    AlertDialog alertDialog = new AlertDialog.Builder(MemberProfile.this)
+                            .setTitle("Status")
+                            .setMessage("The user is Deauthorized")
+                            .setPositiveButton("Change", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // continue with delete
+                                    dialog.dismiss();
+                                    new AlertDialog.Builder(MemberProfile.this)
+                                            .setTitle("Change Authorization")
+                                            .setMessage("Are you sure you want to Authorize this Member?")
+                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    // continue with delete
+
+                                                }
+                                            })
+                                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    // do nothing
+                                                    dialog.dismiss();
+                                                }
+                                            })
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .show();
+                                }
+                            })
+                            .setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                    dialog.dismiss();
+                                }
+                            })
+                            .show();
+                }
+            }
+        });
         profile_edit = (FloatingActionButton)findViewById(R.id.profile_edit);
         profile_edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,12 +168,11 @@ public class MemberProfile extends AppCompatActivity implements  ProfileCallLogs
         {
             status.setVisibility(View.GONE);
         }
-Log.i("Member id",getString(R.string.url).concat("call/" + id + "/"));
+        if (!id.equals(SessionManager.getId(MemberProfile.this))){
+            profile_edit.setVisibility(View.GONE);
+        }
 
-//        if (id.equals(SessionManager.getjwt(MemberProfile.this)))
-//        {
-//            profile_edit.setVisibility(View.VISIBLE);
-//        }
+
         if (isNetworkAvailable()) {
             Log.i("Error check", "Flag two");
             Ion.with(this)
@@ -123,11 +204,62 @@ Log.i("Member id",getString(R.string.url).concat("call/" + id + "/"));
                                 callLogs.add(time);
                                 callLogs.add(duration);
                                 callLogs.add(type);
-                                setupViewPager(viewPager);
-                                tabLayout.setupWithViewPager(viewPager);
-                                tabLayout.setTabTextColors(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
-                                progressBar.setVisibility(View.GONE);
-                                Log.i("Error check", "Flag four");
+                                Ion.with(MemberProfile.this)
+                                        .load("POST", getString(R.string.url).concat("getmeeting/"+id+"/"))
+                                        .setHeader("x-access-token", SessionManager.getjwt(MemberProfile.this))
+                                        .asJsonObject()
+                                        .setCallback(new FutureCallback<JsonObject>() {
+                                            @Override
+                                            public void onCompleted(Exception e, JsonObject result) {
+
+
+                                                JsonArray meetingdata = result.get("meetings").getAsJsonArray();
+                                                ArrayList<String>description_ = new ArrayList<String>();
+                                                ArrayList<ArrayList>photourl_ = new ArrayList<>();
+                                                ArrayList<String>lat_ = new ArrayList<>();
+                                                ArrayList<String>lng_ = new ArrayList<>();
+                                                ArrayList<String>creator_ = new ArrayList<>();
+                                                ArrayList<String>created_ = new ArrayList<>();
+                                                ArrayList<String>id_ = new ArrayList<>();
+
+
+                                                for (int i=0; i<meetingdata.size(); i++) {
+                                                    JsonObject meeting = meetingdata.get(i).getAsJsonObject();
+                                                    String description = meeting.get("description").getAsString();
+                                                    JsonArray photourl = meeting.get("photos").getAsJsonArray();
+                                                    ArrayList<String> photosurl = new ArrayList<String>();
+                                                    for (int j = 0; j < photourl.size(); j++) {
+                                                        photosurl.add(getString(R.string.media_url).concat(photourl.get(j).getAsString()));
+                                                    }
+                                                    String lat = meeting.get("lat").getAsString();
+                                                    String lng = meeting.get("lng").getAsString();
+                                                    String creator = meeting.get("creator").getAsString();
+                                                    String created = meeting.get("created").getAsString();
+                                                    String id = meeting.get("_id").getAsString();
+                                                    description_.add(description);
+                                                    photourl_.add(photosurl);
+                                                    lat_.add(lat);
+                                                    lng_.add(lng);
+                                                    creator_.add(creator);
+                                                    created_.add(created);
+                                                    id_.add(id);
+
+                                                }
+
+                                                meetings.add(description_);
+                                                meetings.add(photourl_);
+                                                meetings.add(lat_);
+                                                meetings.add(lng_);
+                                                meetings.add(creator_);
+                                                meetings.add(created_);
+                                                meetings.add(id_);
+                                                setupViewPager(viewPager);
+                                                tabLayout.setupWithViewPager(viewPager);
+                                                tabLayout.setTabTextColors(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+                                                progressBar.setVisibility(View.GONE);
+                                                Log.i("Error check", "Flag four");
+                                            }
+                                        });
 
                             } catch (NullPointerException e1) {
 
@@ -152,7 +284,7 @@ Log.i("Member id",getString(R.string.url).concat("call/" + id + "/"));
 
     private void setupViewPager(ViewPager viewPager) {
         MemberProfileAdapter adapter = new MemberProfileAdapter(getSupportFragmentManager());
-       // adapter.addFragment(profileMeetingsFragment, "Meetings");
+        adapter.addFragment(profileMeetingsFragment, "Meetings");
         adapter.addFragment(profileCallLogsFragment, "Call Logs");
         viewPager.setAdapter(adapter);
     }
@@ -186,10 +318,8 @@ Log.i("Member id",getString(R.string.url).concat("call/" + id + "/"));
         return callLogs;
     }
 
-//    @Override
-//    public ArrayList<ArrayList> getMeetings() {
-//        return meetings;
-//    }
+    @Override
+    public ArrayList<ArrayList> getMeetings() { return meetings; }
 }
 
 

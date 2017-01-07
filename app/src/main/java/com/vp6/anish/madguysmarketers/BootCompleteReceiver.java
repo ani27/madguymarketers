@@ -12,7 +12,7 @@ public class BootCompleteReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Log.i("TAG", "Inside Boot Complete Receiver");
+        Log.i("TAG", "Inside Boot Complete Receiv");
         Intent service = new Intent(context, LocationService.class);
         context.startService(service);
     }

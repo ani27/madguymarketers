@@ -1,6 +1,5 @@
 package com.vp6.anish.madguysmarketers;
 
-import android.*;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -8,22 +7,21 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -38,7 +36,6 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 public class CoachingDisplayActivity extends AppCompatActivity {
@@ -69,6 +66,7 @@ public class CoachingDisplayActivity extends AppCompatActivity {
     TextView phone_number;
     TextView pincode;
     TextView city;
+    TextView city_above;
     TextView state;
     String  lat;
     String  lng;
@@ -84,19 +82,22 @@ public class CoachingDisplayActivity extends AppCompatActivity {
     TextView number_of_coaching_registration_photos;
     ImageView director_photo_img;
     String director_photo_url = "";
-
     ProgressBar progressBar;
     RelativeLayout relativeLayout;
-
+    Toolbar toolbar;
     String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.coaching_display);
+//        toolbar = (Toolbar)findViewById(R.id.toolbar);
+//        collapsingToolbarLayout= (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
+//
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setTitle("");
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Coaching");
         coachingphotoaddress = new ArrayList<>();
         agreementphotoaddress = new ArrayList<>();
         coachingregistrationphotoaddress = new ArrayList<>();
@@ -105,6 +106,8 @@ public class CoachingDisplayActivity extends AppCompatActivity {
         agreementphotoupload = new ArrayList<>();
         studentlistphotoupload = new ArrayList<>();
         coachingregistrationphotoupload = new ArrayList<>();
+//        collapsingToolbarLayout= (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
+
         coaching_photos = (RecyclerView)findViewById(R.id.coaching_photo_recyclerview);
         agreement_photos= (RecyclerView)findViewById(R.id.partnership_agreement_photo_recyclerview);
         studentlist_photos = (RecyclerView)findViewById(R.id.studentlist_photo_recyclerview);
@@ -115,6 +118,7 @@ public class CoachingDisplayActivity extends AppCompatActivity {
         phone_number  = (TextView)findViewById(R.id.phone_number_display);
         pincode = (TextView)findViewById(R.id.pincode_display);
         city  = (TextView)findViewById(R.id.city_diplay);
+        city_above  = (TextView)findViewById(R.id.city_display);
         state  = (TextView)findViewById(R.id.state_display);
         hardware  = (TextView)findViewById(R.id.hardware_display);
         coachingstatus  = (TextView)findViewById(R.id.coachingstatus_display);
@@ -183,7 +187,10 @@ public class CoachingDisplayActivity extends AppCompatActivity {
                                     if (!state.equals(""))
                                     state.setText(state_);
                                     if (!city.equals(""))
-                                    city.setText(city_);
+                                    {
+                                        city.setText(city_);
+                                        city_above.setText(city_);
+                                    }
                                     if(!pincode_.toString().equals(""))
                                     pincode.setText(pincode_.toString());
 
@@ -231,12 +238,12 @@ public class CoachingDisplayActivity extends AppCompatActivity {
 
                                     for(int i = 0;  i<registration_photo.size(); i++)
                                     {
-                                        coachingregistrationphotoaddress.add("http://192.168.124.106:3000/media/".concat(registration_photo.get(i).getAsString()));
+                                        coachingregistrationphotoaddress.add(getString(R.string.media_url).concat(registration_photo.get(i).getAsString()));
                                         coachingregistrationphotoupload.add(true);
                                     }
 
                                     if(!director_photo.equals("")){
-                                        director_photo_url = "http://192.168.124.106:3000/media/".concat(director_photo);
+                                        director_photo_url = getString(R.string.media_url).concat(director_photo);
                                         Glide.with(CoachingDisplayActivity.this).load(director_photo_url)
                                                 .thumbnail(0.5f)
                                                 .crossFade()
@@ -356,14 +363,14 @@ public class CoachingDisplayActivity extends AppCompatActivity {
     public void addphotos(View v) {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Choose type to Add photos");
+        builder.setTitle("Choose type");
+
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(CoachingDisplayActivity.this, android.R.layout.select_dialog_item);
         arrayAdapter.add("Coaching Photos");
         arrayAdapter.add("Agreement Photos");
         arrayAdapter.add("Student List Photos");
         arrayAdapter.add("Coaching Registration Photos");
-
         builder.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {

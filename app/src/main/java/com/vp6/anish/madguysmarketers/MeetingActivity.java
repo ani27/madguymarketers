@@ -1,6 +1,5 @@
 package com.vp6.anish.madguysmarketers;
 
-import android.*;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -8,14 +7,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +32,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
@@ -38,19 +44,22 @@ import com.koushikdutta.ion.Ion;
 import java.io.File;
 import java.util.ArrayList;
 
-public class MeetingActivity extends AppCompatActivity {
+public class MeetingActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    ArrayList<String>meetingphotoaddress;
+    ArrayList<String> meetingphotoaddress;
     TextView numberofphotos;
     TextView location;
     int MeetingPhoto = 301;
     int MeetingMap = 302;
-    String lat_meeting="";
-    String lng_meeting="";
-    String id="";
+    String lat_meeting = "";
+    String lng_meeting = "";
+    String id = "";
     MeetingAdapter meetingAdapter;
     RecyclerView recyclerView;
     ProgressBar progressBar;
+    GoogleApiClient mGoogleApiClient;
+    Location mLastLocation;
+    LatLng markedlocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +67,18 @@ public class MeetingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_meeting);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         id = getIntent().getExtras().getString("id");
+        markedlocation = null;
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+            Log.i("MAP", "inside googleapiclient");
+        }
 
-        recyclerView = (RecyclerView)findViewById(R.id.meeting_list);
-        progressBar = (ProgressBar)findViewById(R.id.progressBar_meeting);
+        recyclerView = (RecyclerView) findViewById(R.id.meeting_list);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar_meeting);
         progressBar.setVisibility(View.VISIBLE);
 
         JsonObject json = new JsonObject();
@@ -75,22 +93,21 @@ public class MeetingActivity extends AppCompatActivity {
                     public void onCompleted(Exception e, JsonObject result) {
                         // do stuff with the result or error
                         JsonArray meetingdata = result.get("meetings").getAsJsonArray();
-                       ArrayList<String>description_ = new ArrayList<String>();
-                       ArrayList<ArrayList>photourl_ = new ArrayList<>();
-                       ArrayList<String>lat_ = new ArrayList<>();
-                       ArrayList<String>lng_ = new ArrayList<>();
-                       ArrayList<String>creator_ = new ArrayList<>();
-                       ArrayList<String>created_ = new ArrayList<>();
-                       ArrayList<String>id_ = new ArrayList<>();
+                        ArrayList<String> description_ = new ArrayList<String>();
+                        ArrayList<ArrayList> photourl_ = new ArrayList<>();
+                        ArrayList<String> lat_ = new ArrayList<>();
+                        ArrayList<String> lng_ = new ArrayList<>();
+                        ArrayList<String> creator_ = new ArrayList<>();
+                        ArrayList<String> created_ = new ArrayList<>();
+                        ArrayList<String> id_ = new ArrayList<>();
 
 
-                        for (int i=0; i<meetingdata.size(); i++){
+                        for (int i = 0; i < meetingdata.size(); i++) {
                             JsonObject meeting = meetingdata.get(i).getAsJsonObject();
                             String description = meeting.get("description").getAsString();
                             JsonArray photourl = meeting.get("photos").getAsJsonArray();
-                            ArrayList<String>photosurl = new ArrayList<String>();
-                            for (int j=0; j<photourl.size(); j++)
-                            {
+                            ArrayList<String> photosurl = new ArrayList<String>();
+                            for (int j = 0; j < photourl.size(); j++) {
                                 photosurl.add(getString(R.string.media_url).concat(photourl.get(j).getAsString()));
                             }
                             String lat = meeting.get("lat").getAsString();
@@ -106,7 +123,7 @@ public class MeetingActivity extends AppCompatActivity {
                             created_.add(created);
                             id_.add(id);
                         }
-                        meetingAdapter = new MeetingAdapter(MeetingActivity.this,description_,lat_,lng_,photourl_,id_,creator_,created_);
+                        meetingAdapter = new MeetingAdapter(MeetingActivity.this, description_, lat_, lng_, photourl_, id_, creator_, created_);
                         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(MeetingActivity.this);
                         recyclerView.setLayoutManager(mLayoutManager);
                         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -134,134 +151,142 @@ public class MeetingActivity extends AppCompatActivity {
     }
 
     public void addmeeting(View v) {
-        meetingphotoaddress = new ArrayList<>();
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        boolean gps = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        if (gps) {
+            meetingphotoaddress = new ArrayList<>();
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        LayoutInflater inflater = getLayoutInflater();
+            LayoutInflater inflater = getLayoutInflater();
 
-        View view = inflater.inflate(R.layout.my_meeting_dialog, (ViewGroup) findViewById(R.id.root));
+            View view = inflater.inflate(R.layout.my_meeting_dialog, (ViewGroup) findViewById(R.id.root));
 
 // Set up the input
-        final EditText input = (EditText)view.findViewById(R.id.description);
-        numberofphotos = (TextView) view.findViewById(R.id.numberofphotos);
-        location = (TextView)view.findViewById(R.id.location_text);
-        location.setText("Location not added");
-        final Button addphotos = (Button)  view.findViewById(R.id.add_meeting_photos);
+            final EditText input = (EditText) view.findViewById(R.id.description);
+            numberofphotos = (TextView) view.findViewById(R.id.numberofphotos);
+            location = (TextView) view.findViewById(R.id.location_text);
+            if (markedlocation == null) {
+                location.setText("Location not added");
+            }
+            else {
+                location.setText("Location added");
+            }
+            final Button addphotos = (Button) view.findViewById(R.id.add_meeting_photos);
 
-        addphotos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            addphotos.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                if(Build.VERSION.SDK_INT >= 23) {
-                    getPermissionToReadExternalStorage();
-                }
+                    if (Build.VERSION.SDK_INT >= 23) {
+                        getPermissionToReadExternalStorage();
+                    }
                     if (ContextCompat.checkSelfPermission(MeetingActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                         Intent intent = new Intent(MeetingActivity.this, GalleryActivity.class);
+                        intent.putExtra("number","10");
                         startActivityForResult(intent, MeetingPhoto);
                         //numberofphotos.setText(meetingphotoaddress.size() +" photos added");
                     }
 
-            }
-        });
-
-        //addphotos.setText("Add Photos");
-
-        final Button addlocation = (Button)view.findViewById(R.id.add_exact_location);
-        addlocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MeetingActivity.this, MapsActivity.class);
-                startActivityForResult(intent, MeetingMap);
-                if (!lat_meeting.equals("0") && !lng_meeting.equals("0")) {
-                    //location.setText("Location added");
-
-
                 }
-            }
-        });
+            });
+
+            //addphotos.setText("Add Photos");
+
+//            final Button addlocation = (Button) view.findViewById(R.id.add_exact_location);
+//            addlocation.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    Intent intent = new Intent(MeetingActivity.this, MapsActivity.class);
+//                    startActivityForResult(intent, MeetingMap);
+//                    if (!lat_meeting.equals("0") && !lng_meeting.equals("0")) {
+//                        //location.setText("Location added");
+//
+//
+//                    }
+//                }
+//            });
 
 
-        // addlocation.setText("Add Location");
+            // addlocation.setText("Add Location");
 // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setHint("Add Meeting details");
-        builder.setView(view);
+            input.setHint("Add Meeting details");
+            builder.setView(view);
 
 
 // Set up the buttons
-        builder.setPositiveButton("Add Meeting", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+            builder.setPositiveButton("Add Meeting", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
 
-                if (!input.getText().toString().trim().equals("")) {
-                    if (isNetworkAvailable()) {
-                        JsonObject json = new JsonObject();
-                        json.addProperty("description", input.getText().toString().trim());
-                        json.addProperty("lat", lat_meeting);
-                        json.addProperty("lng", lng_meeting);
-                        json.addProperty("relatedObjId", id);
-                        Ion.with(MeetingActivity.this)
-                                .load("POST", getString(R.string.url).concat("/meeting/"))
-                                .setHeader("x-access-token", SessionManager.getjwt(MeetingActivity.this))
-                                .setJsonObjectBody(json)
-                                .asJsonObject()
-                                .setCallback(new FutureCallback<JsonObject>() {
-                                    @Override
-                                    public void onCompleted(Exception e, JsonObject result) {
+                    if (markedlocation != null) {
+                        if (!input.getText().toString().trim().equals("")) {
+                            if (isNetworkAvailable()) {
+                                JsonObject json = new JsonObject();
+                                json.addProperty("description", input.getText().toString().trim());
+                                json.addProperty("lat", markedlocation.latitude+"");
+                                json.addProperty("lng", markedlocation.longitude+"");
+                                json.addProperty("relatedObjId", id);
+                                Ion.with(MeetingActivity.this)
+                                        .load("POST", getString(R.string.url).concat("/meeting/"))
+                                        .setHeader("x-access-token", SessionManager.getjwt(MeetingActivity.this))
+                                        .setJsonObjectBody(json)
+                                        .asJsonObject()
+                                        .setCallback(new FutureCallback<JsonObject>() {
+                                            @Override
+                                            public void onCompleted(Exception e, JsonObject result) {
 
-                                        String creator = result.get("creator").getAsString();
-                                        String created = result.get("created").getAsString();
-                                        String id = result.get("_id").getAsString();
-                                        meetingAdapter.insert(input.getText().toString().trim(),creator, created, id,meetingphotoaddress,lat_meeting, lng_meeting);
-                                        try {
-                                            //String meeting_id = result.get("_id").getAsString();
-                                            for (int i = 0; i < meetingphotoaddress.size(); i++) {
-                                                Ion.with(MeetingActivity.this)
-                                                        .load("POST", getString(R.string.url).concat("photo/"))
-                                                        .setHeader("x-access-token", SessionManager.getjwt(MeetingActivity.this))
-                                                        .setMultipartParameter("type", "meeting")
-                                                        .setMultipartParameter("photo_type", "photos")
-                                                        .setMultipartParameter("_id", id)
-                                                        .setMultipartFile("image", "image/jpeg", new File(meetingphotoaddress.get(i)))
-                                                        .asJsonObject()
-                                                        .setCallback(new FutureCallback<JsonObject>() {
-                                                            @Override
-                                                            public void onCompleted(Exception e, JsonObject result) {
+                                                //Log.i("result", result.get("creator").getAsJsonObject().get("name").toString());
+                                                String creator = result.get("creator").getAsJsonObject().get("name").getAsString();
+                                                String created = result.get("created").getAsString();
+                                                String id = result.get("_id").getAsString();
+                                                meetingAdapter.insert(input.getText().toString().trim(), creator, created, id, meetingphotoaddress, markedlocation.latitude+"", markedlocation.longitude+"");
+                                                try {
+                                                    //String meeting_id = result.get("_id").getAsString();
+                                                    for (int i = 0; i < meetingphotoaddress.size(); i++) {
+                                                        Ion.with(MeetingActivity.this)
+                                                                .load("POST", getString(R.string.url).concat("photo/"))
+                                                                .setHeader("x-access-token", SessionManager.getjwt(MeetingActivity.this))
+                                                                .setMultipartParameter("type", "meeting")
+                                                                .setMultipartParameter("photo_type", "photos")
+                                                                .setMultipartParameter("_id", id)
+                                                                .setMultipartFile("image", "image/jpeg", new File(meetingphotoaddress.get(i)))
+                                                                .asJsonObject()
+                                                                .setCallback(new FutureCallback<JsonObject>() {
+                                                                    @Override
+                                                                    public void onCompleted(Exception e, JsonObject result) {
 
-                                                            }
-                                                        });
-
-
+                                                                    }
+                                                                });
+                                                    }
+                                                } catch (NullPointerException e1) {
+                                                    Toast.makeText(MeetingActivity.this, "Failed, try Later", Toast.LENGTH_SHORT).show();
+                                                }
                                             }
-                                        } catch (NullPointerException e1) {
-                                            Toast.makeText(MeetingActivity.this, "Failed, try Later", Toast.LENGTH_SHORT).show();
-
-                                        }
-
-                                    }
-                                });
-
-
-                    } else {
-                        Toast.makeText(MeetingActivity.this, "Connect to Internet and Try again", Toast.LENGTH_LONG).show();
+                                        });
+                            } else {
+                                Toast.makeText(MeetingActivity.this, "Connect to Internet and Try again", Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            Toast.makeText(MeetingActivity.this, "Description is must. ", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                    else{
+                        Toast.makeText(MeetingActivity.this, "Location not marked yet ", Toast.LENGTH_LONG).show();
                     }
                 }
-                else
-                {
-                    Toast.makeText(MeetingActivity.this, "Description is must. ", Toast.LENGTH_LONG).show();
+            });
+
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
                 }
-            }
-        });
+            });
 
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        builder.show();
-
+            builder.show();
+        } else {
+            Toast.makeText(this, "Turn on the GPS first", Toast.LENGTH_LONG).show();
+        }
     }
 
 
@@ -272,8 +297,7 @@ public class MeetingActivity extends AppCompatActivity {
             if (requestCode == MeetingPhoto) {
                 meetingphotoaddress = data.getStringArrayListExtra("photosurl");
                 numberofphotos.setText(meetingphotoaddress.size() + " photos added");
-            }
-            else if (requestCode == MeetingMap){
+            } else if (requestCode == MeetingMap) {
                 lat_meeting = data.getStringExtra("Latitude");
                 lng_meeting = data.getStringExtra("Longitude");
                 location.setText("Location added");
@@ -283,9 +307,8 @@ public class MeetingActivity extends AppCompatActivity {
     }
 
 
-
     public void showmeetinglocation(String Lat, String Lng) {
-        if(!Lat.equals("") && !Lng.equals("")){
+        if (!Lat.equals("") && !Lng.equals("")) {
             if (Build.VERSION.SDK_INT >= 23) {
                 getPermissionToAccessFineLocation();
             }
@@ -300,16 +323,14 @@ public class MeetingActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(this, "Turn on the GPS first", Toast.LENGTH_LONG).show();
                 }
-            }}
-        else
-        {
+            }
+        } else {
 
             Toast.makeText(this, "Location was not marked at time of meeting.", Toast.LENGTH_LONG).show();
 
         }
 
     }
-
 
 
     private static final int ACCESS_FINE_LOCATION = 2;
@@ -388,9 +409,7 @@ public class MeetingActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Access Location permission denied. It is required to get your exact location", Toast.LENGTH_SHORT).show();
             }
-        }
-
-        else if (requestCode == READ_EXTERNAL_STORAGE) {
+        } else if (requestCode == READ_EXTERNAL_STORAGE) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Read External Storage Permission granted", Toast.LENGTH_SHORT).show();
 
@@ -401,7 +420,6 @@ public class MeetingActivity extends AppCompatActivity {
         }
 
 
-
     }
 
     private boolean isNetworkAvailable() {
@@ -409,6 +427,49 @@ public class MeetingActivity extends AppCompatActivity {
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ){       // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            getPermissionToAccessFineLocation();
+            return;
+        }
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastLocation != null) {
+
+            LatLng current_location = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());//(-34, 151);
+            //mMap.addMarker(new MarkerOptions().position(current_location).title("current Location"));
+            markedlocation = current_location;
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+    protected void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
+        Log.i("MAP","inside on start");
+    }
+
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
+        Log.i("MAP","inside onstop");
     }
 
 }

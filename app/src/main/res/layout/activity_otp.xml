@@ -30,4 +30,12 @@
         android:onClick="verifyotp"
         android:textColor="@android:color/white"
         android:id="@+id/login_button"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/black"
+        android:background="@color/transparent"
+        android:onClick="signupagain"
+        android:text="Sign Up Again"/>
 </RelativeLayout>

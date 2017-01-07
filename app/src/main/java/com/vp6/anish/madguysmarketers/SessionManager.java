@@ -3,8 +3,6 @@ package com.vp6.anish.madguysmarketers;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import java.util.ArrayList;
-
 /**
  * Created by anish on 20-10-2016.
  */
@@ -36,6 +34,7 @@ public class SessionManager {
     private static final String IS_NAME = "IsName";
     private static final String IS_JWT = "IsJwt";
     private static final String IS_ID = "IsId";
+    private static final String IS_NUMBER_ENTERED = "IsNumberEntered";
 
 
 
@@ -170,5 +169,17 @@ public class SessionManager {
 
         SharedPreferences savedSession = context.getSharedPreferences(PREF_NAME, Context.MODE_APPEND);
         return savedSession.getLong(WORKING_TO, 17*60);
+    }
+
+    public static void setHasEnteredNumber(Context context, boolean isUserSignUp) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(PREF_NAME, Context.MODE_APPEND).edit();
+        editor.putBoolean(IS_NUMBER_ENTERED, isUserSignUp);
+        editor.commit();
+    }
+
+    public static boolean getHasEnteredNumber(Context context) {
+
+        SharedPreferences savedSession = context.getSharedPreferences(PREF_NAME, Context.MODE_APPEND);
+        return savedSession.getBoolean(IS_NUMBER_ENTERED, false);
     }
 }

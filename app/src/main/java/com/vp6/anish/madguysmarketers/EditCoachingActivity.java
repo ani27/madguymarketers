@@ -5,14 +5,14 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -28,7 +28,10 @@ import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class EditCoachingActivity extends AppCompatActivity {
 
@@ -145,6 +148,13 @@ public class EditCoachingActivity extends AppCompatActivity {
             if (requestCode == map_activity) {
                 latitude = data.getStringExtra("Latitude");
                 longitude = data.getStringExtra("Longitude");
+
+                try {
+                    getAddressFromLocation(Double.parseDouble(latitude), Double.parseDouble(longitude), this);
+                }
+                catch (NullPointerException e){
+
+                }
                 // Toast.makeText(this, latitude + " " + longitude, Toast.LENGTH_SHORT).show();
                 if (!latitude.equals("0") && !longitude.equals("0")) {
                     maplocation.setText("Location added");
@@ -176,8 +186,6 @@ public class EditCoachingActivity extends AppCompatActivity {
             senddata.add(examteaching.getText().toString().trim());
 
 
-//        AsyncAddCafe asyncAddCafe = new AsyncAddCafe(AddCoachingActivity.this, senddata, "coaching");
-//        asyncAddCafe.execute();
 
             JsonObject json = new JsonObject();
 
@@ -208,18 +216,6 @@ public class EditCoachingActivity extends AppCompatActivity {
                             Toast.makeText(EditCoachingActivity.this, "Edited", Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(EditCoachingActivity.this, CoachingDisplayActivity.class);
                             intent.putExtra("id", id);
-//                        intent.putExtra("coachingname", coachingname.getText().toString().trim());
-//                        intent.putExtra("directorname", directorname.getText().toString().trim());
-//                        intent.putExtra("phonenumber", mobilenumber.getText().toString().trim());
-//                        intent.putExtra("pincode", pincode.getText().toString().trim());
-//                        intent.putExtra("city", city.getText().toString().trim());
-//                        intent.putExtra("state", state.getText().toString().trim());
-//                        intent.putExtra("lat", latitude);
-//                        intent.putExtra("lng", longitude);
-//                        intent.putExtra("hardware", hardware.getText().toString().trim());
-//                        intent.putExtra("address", address.getText().toString().trim());
-//                        intent.putExtra("coachingstatus", (coaching_status.getSelectedItem().toString().trim()));
-//
                             startActivity(intent);
                             finish();
                         }
@@ -294,4 +290,39 @@ public class EditCoachingActivity extends AppCompatActivity {
 
 
     }
+
+
+
+    public void getAddressFromLocation(final double latitude, final double longitude, final Context context) {
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+                String result = "";
+                try {
+                    List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);
+                    if (addressList != null && addressList.size() > 0) {
+                        Address address1 = addressList.get(0);
+                        StringBuilder sb = new StringBuilder();
+                        for (int i = 0; i < address1.getMaxAddressLineIndex(); i++) {
+                            sb.append(address1.getAddressLine(i)).append("\n");
+                        }
+
+                        result = sb.toString();
+                        address.setText(result);
+                        city.setText(address1.getLocality());
+                        state.setText(address1.getAdminArea());
+                        pincode.setText(address1.getPostalCode());
+
+
+                    }
+                } catch (IOException e) {
+                    Log.e("GeoCoder", "Unable connect to Geocoder", e);
+                }
+            }
+        });
+    }
+
+
 }

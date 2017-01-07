@@ -1,19 +1,11 @@
 package com.vp6.anish.madguysmarketers;
 
-import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -41,8 +33,8 @@ public class MyListingFragment extends Fragment implements  View.OnClickListener
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private Boolean isFabOpen = false;
-    private FloatingActionButton fab,fab1,fab2;
-    private TextView fab1text, fab2text;
+    private FloatingActionButton fab,fab1,fab2,fab_map;
+    private TextView fab1text, fab2text,fab_map_text;
     private Animation fab_open,fab_close,rotate_forward,rotate_backward;
 
     // TODO: Rename and change types of parameters
@@ -52,7 +44,13 @@ public class MyListingFragment extends Fragment implements  View.OnClickListener
     public ArrayList<String> mData_name;
     public ArrayList<String> mData_type;
     public ArrayList<String> mData_id;
+    public ArrayList<String> mData_phone_number;
+    public ArrayList<String> mData_status;
+    public ArrayList<String> mData_address;
+    public ArrayList<String> mData_lat;
+    public ArrayList<String> mData_lng;
     public ArrayList<String> mData_imageurl;
+
     public OnFragmentInteractionListener mListener;
     RecyclerView recyclerView;
     ListingAdapter listingAdapter;
@@ -99,7 +97,14 @@ public class MyListingFragment extends Fragment implements  View.OnClickListener
         mData_type = new ArrayList<>();
         mData_id = new ArrayList<>();
         mData_imageurl = new ArrayList<>();
+        mData_lat = new ArrayList<>();
+        mData_lng = new ArrayList<>();
+        mData_address = new ArrayList<>();
+        mData_phone_number = new ArrayList<>();
+        mData_status = new ArrayList<>();
+
         mData = new ArrayList<>();
+
         View v = inflater.inflate(R.layout.fragment_my_listing, container, false);
         if(mListener != null){
 
@@ -110,12 +115,17 @@ public class MyListingFragment extends Fragment implements  View.OnClickListener
                 mData_type = mData.get(1);
                 mData_id = mData.get(2);
                 mData_imageurl = mData.get(3);
+                mData_status = mData.get(4);
+                mData_address = mData.get(5);
+                mData_phone_number = mData.get(6);
+                mData_lat = mData.get(7);
+                mData_lng = mData.get(8);
             }
 
             }
         }
         recyclerView = (RecyclerView) v.findViewById(R.id.listView1);
-        listingAdapter = new ListingAdapter(mcontext,mData_imageurl,mData_name,mData_type,mData_id, MyListingFragment.this);
+        listingAdapter = new ListingAdapter(mcontext,mData_imageurl,mData_name,mData_type,mData_id,mData_phone_number,mData_status,mData_address, MyListingFragment.this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mcontext);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -129,6 +139,9 @@ public class MyListingFragment extends Fragment implements  View.OnClickListener
         fab1text =(TextView) v.findViewById(R.id.fab1text);
         fab2 = (FloatingActionButton)v.findViewById(R.id.fab2);
         fab2text =(TextView)v.findViewById(R.id.fab2text);
+        fab_map = (FloatingActionButton)v.findViewById(R.id.fab_map);
+        fab_map_text =(TextView)v.findViewById(R.id.fab_map_text);
+
         fab_open = AnimationUtils.loadAnimation(mcontext, R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(mcontext,R.anim.fab_close);
         rotate_forward = AnimationUtils.loadAnimation(mcontext,R.anim.record_forward);
@@ -136,6 +149,7 @@ public class MyListingFragment extends Fragment implements  View.OnClickListener
         fab.setOnClickListener(this);
         fab1.setOnClickListener(this);
         fab2.setOnClickListener(this);
+        fab_map.setOnClickListener(this);
 
        //// getPermissionToReadCallLogs();
 
@@ -170,11 +184,16 @@ public class MyListingFragment extends Fragment implements  View.OnClickListener
     @Override
     public void onResume() {
         super.onResume();
-        mData = new ArrayList<>();
         mData_name = new ArrayList<>();
         mData_type = new ArrayList<>();
         mData_id = new ArrayList<>();
         mData_imageurl = new ArrayList<>();
+        mData_lat = new ArrayList<>();
+        mData_lng = new ArrayList<>();
+        mData_address = new ArrayList<>();
+        mData_phone_number = new ArrayList<>();
+        mData_status = new ArrayList<>();
+        mData = new ArrayList<>();
         if(mListener != null){
             mData = mListener.getData();
             if(mData != null){
@@ -183,6 +202,11 @@ public class MyListingFragment extends Fragment implements  View.OnClickListener
                 mData_type = mData.get(1);
                 mData_id = mData.get(2);
                 mData_imageurl = mData.get(3);
+                mData_status = mData.get(4);
+                mData_address = mData.get(5);
+                mData_phone_number = mData.get(6);
+                mData_lat = mData.get(7);
+                mData_lng = mData.get(8);
             }
             }
         }
@@ -212,10 +236,13 @@ public class MyListingFragment extends Fragment implements  View.OnClickListener
             fab.startAnimation(rotate_backward);
             fab1.startAnimation(fab_close);
             fab2.startAnimation(fab_close);
+            fab_map.startAnimation(fab_close);
             fab1text.startAnimation(fab_close);
             fab2text.startAnimation(fab_close);
+            fab_map_text.startAnimation(fab_close);
             fab1.setClickable(false);
             fab2.setClickable(false);
+            fab_map.setClickable(false);
             isFabOpen = false;
           //  Log.d("Raj", "close");
 
@@ -224,11 +251,13 @@ public class MyListingFragment extends Fragment implements  View.OnClickListener
             fab.startAnimation(rotate_forward);
             fab1.startAnimation(fab_open);
             fab2.startAnimation(fab_open);
+            fab_map.startAnimation(fab_open);
             fab1text.startAnimation(fab_open);
             fab2text.startAnimation(fab_open);
+            fab_map_text.startAnimation(fab_open);
             fab1.setClickable(true);
             fab2.setClickable(true);
-
+            fab_map.setClickable(true);
             isFabOpen = true;
         //    Log.d("Raj","open");
 
@@ -240,7 +269,6 @@ public class MyListingFragment extends Fragment implements  View.OnClickListener
         int id = view.getId();
         switch (id){
             case R.id.fab:
-
                 animateFAB();
                 break;
             case R.id.fab1:
@@ -250,6 +278,17 @@ public class MyListingFragment extends Fragment implements  View.OnClickListener
             case R.id.fab2:
                 Intent intent = new Intent(mcontext,AddCafeActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.fab_map:
+                Intent intent3  = new Intent(mcontext, LocationDisplayActivity.class);
+                intent3.putStringArrayListExtra("lat_list", mData_lat);
+                intent3.putStringArrayListExtra("lng_list", mData_lng);
+                intent3.putStringArrayListExtra("status_list", mData_status);
+                intent3.putStringArrayListExtra("type_list", mData_type);
+                intent3.putStringArrayListExtra("name_list", mData_name);
+                intent3.putStringArrayListExtra("address_list", mData_address);
+                intent3.putStringArrayListExtra("id_list", mData_id);
+                startActivity(intent3);
 
                 break;
         }
@@ -273,4 +312,15 @@ public class MyListingFragment extends Fragment implements  View.OnClickListener
         //void onFragmentInteraction(Uri uri);
         ArrayList<ArrayList> getData();
     }
+
+    public void mylisting_map(){
+        Intent intent  = new Intent(mcontext, LocationDisplayActivity.class);
+        intent.putStringArrayListExtra("lat_list", mData_lat);
+        intent.putStringArrayListExtra("lng_list", mData_lng);
+        intent.putStringArrayListExtra("status_list", mData_status);
+        startActivity(intent);
+
+    }
+
+
 }

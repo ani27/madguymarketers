@@ -1,12 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="colorFAB1">#2196F3</color>
-    <color name="yellow">#E6D660</color>
-    <color name="colorFAB2">#E040FB</color>
-    <color name="grey">#9C9F9F</color>
-    <color name="light_grey">#D4D6D6</color>
-    <color name="white">#ffffff</color>
+    <color name="tabTextColor">#ffffff</color>
+    <color name="tabSelectedTextColor">#cccccc</color>
+    <color name="accent">#40C4FF</color>
+    <color name="colorPrimary">#2E9AFE</color>
+    <color name="colorPrimaryDark">#0286FF</color>
+    <color name="colorAccent">#009788</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+    <color name="black_20">#33000000</color>
+    <color name="white_20">#33FFFFFF</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="text_enabled">#FFFFFFFF</color>
+    <color name="text_disabled">#4DFFFFFF</color>
+
+    <color name="icon_enabled">#FFFFFFFF</color>
+    <color name="icon_disabled">#FF63727B</color>
+
+    <color name="medium_text_enabled">#FF000000</color>
+    <color name="medium_text_disabled">#4D000000</color>
+
+    <color name="light_blue_500">#03A9F4</color>
+    <color name="cyan_500">#00BCD4</color>
+    <color name="teal_500">#009688</color>
+    <color name="green_500">#4CAF50</color>
+    <color name="light_green_500">#8BC34A</color>
+    <color name="like_active_color">#FFA500</color>
+    <color name="like_normal_color">#9d9da5</color>
+    <color name="signup_button_color">#EF721F</color>
+
+    <integer-array name="custom_tab_colors">
+        <item>@color/light_blue_500</item>
+        <item>@color/cyan_500</item>
+        <item>@color/teal_500</item>
+        <item>@color/green_500</item>
+        <item>@color/light_green_500</item>
+    </integer-array>
+
 </resources>

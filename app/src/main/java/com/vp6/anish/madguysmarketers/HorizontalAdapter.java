@@ -1,19 +1,15 @@
 package com.vp6.anish.madguysmarketers;
 
-import android.app.Activity;
-import android.content.Context;
-import android.support.v4.media.session.IMediaControllerCallback;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.koushikdutta.ion.builder.Builders;
 
 import java.util.ArrayList;
 
@@ -27,6 +23,7 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
     CafeDisplayActivity cafeDisplayActivity;
     CoachingDisplayActivity coachingDisplayActivity;
     MeetingActivity meetingActivity;
+    ProfileMeetingsFragment profileMeetingsFragment;
     private ArrayList<Boolean> uploadcheck;
 
 
@@ -66,6 +63,14 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
         this.cafeDisplayActivity = null;
         this.meetingActivity = meetingActivity;
     }
+    public HorizontalAdapter(ProfileMeetingsFragment profileMeetingsFragment, ArrayList<String> horizontalList) {
+        this.coachingDisplayActivity = null;
+        this.horizontalList = horizontalList;
+        this.type = null;
+        this.cafeDisplayActivity = null;
+        this.meetingActivity = null;
+        this.profileMeetingsFragment = profileMeetingsFragment;
+    }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -84,27 +89,8 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
                     .diskCacheStrategy(DiskCacheStrategy.RESULT)
                     .into(holder.imageView);
 
-            if (uploadcheck.get(position))
-            {
-                holder.progressBar.setVisibility(View.GONE);
-                //holder.close.setClickable(true);
-               // holder.close.setVisibility(View.VISIBLE);
-            }
-            else
-            {
-                holder.progressBar.setVisibility(View.VISIBLE);
-               // holder.close.setClickable(false);
-               // holder.close.setVisibility(View.INVISIBLE);
-            }
 
-//            holder.close.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    delete(position);
-//                  //  addCafeActivity.numberofphotochanged(type, horizontalList.size());
-//                    cafeDisplayActivity.numberofphotochanged(type, horizontalList.size());
-//                }
-//            });
+            Log.i("Images", horizontalList.get(position));
 
         }
         else if (cafeDisplayActivity == null && coachingDisplayActivity != null)
@@ -115,19 +101,23 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
                     .diskCacheStrategy(DiskCacheStrategy.RESULT)
                     .into(holder.imageView);
 
-//            holder.close.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    delete(position);
-//                  //  addCoachingActivity.numberofphotochanged(type, horizontalList.size());
-//                    coachingDisplayActivity.numberofphotochanged(type, horizontalList.size());
-//                }
-//            });
+            Log.i("Images", horizontalList.get(position));
+
+
         }
 
-        else if(cafeDisplayActivity == null && coachingDisplayActivity == null){
+        else if(cafeDisplayActivity == null && coachingDisplayActivity == null && meetingActivity != null){
            // holder.close.setVisibility(View.GONE);
             Glide.with(meetingActivity).load(horizontalList.get(position))
+                    .thumbnail(0.5f)
+                    .crossFade()
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .into(holder.imageView);
+
+
+        }
+        else{
+            Glide.with(profileMeetingsFragment).load(horizontalList.get(position))
                     .thumbnail(0.5f)
                     .crossFade()
                     .diskCacheStrategy(DiskCacheStrategy.RESULT)

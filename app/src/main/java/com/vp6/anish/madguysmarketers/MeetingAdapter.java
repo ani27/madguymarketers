@@ -6,12 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.koushikdutta.ion.builder.Builders;
 
 import java.util.ArrayList;
 
@@ -27,6 +22,7 @@ public class MeetingAdapter extends RecyclerView.Adapter<MeetingAdapter.MyViewHo
     ArrayList<String>id;
     ArrayList<String>creator;
     ArrayList<String>created;
+    ProfileMeetingsFragment profileMeetingsFragment;
     MeetingActivity meetingActivity;
     public  MeetingAdapter (MeetingActivity meetingActivity,ArrayList<String>description, ArrayList<String>lat, ArrayList<String>lng, ArrayList<ArrayList>imageurl, ArrayList<String>id, ArrayList<String>creator, ArrayList<String>created)
     {
@@ -36,6 +32,19 @@ public class MeetingAdapter extends RecyclerView.Adapter<MeetingAdapter.MyViewHo
         this.imageurl  = imageurl;
         this.id = id;
         this.meetingActivity = meetingActivity;
+        this.profileMeetingsFragment = null;
+        this.creator = creator;
+        this.created = created;
+    }
+    public  MeetingAdapter (ProfileMeetingsFragment profileMeetingsFragment, ArrayList<String>description, ArrayList<String>lat, ArrayList<String>lng, ArrayList<ArrayList>imageurl, ArrayList<String>id, ArrayList<String>creator, ArrayList<String>created)
+    {
+        this.description = description;
+        this.lat = lat;
+        this.lng= lng;
+        this.imageurl  = imageurl;
+        this.id = id;
+        this.profileMeetingsFragment = profileMeetingsFragment;
+        this.meetingActivity = null;
         this.creator = creator;
         this.created = created;
     }
@@ -74,28 +83,49 @@ public class MeetingAdapter extends RecyclerView.Adapter<MeetingAdapter.MyViewHo
     @Override
     public void onBindViewHolder(MeetingAdapter.MyViewHolder holder, final int position) {
 
-        holder.description.setText(description.get(position));
-        holder.id.setText(id.get(position));
-        holder.created.setText(created.get(position));
-        holder.creator.setText(creator.get(position));
-        holder.button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                meetingActivity.showmeetinglocation(lat.get(position),lng.get(position));
+        if (meetingActivity != null) {
+            holder.description.setText(description.get(position));
+            holder.id.setText(id.get(position));
+            holder.created.setText(created.get(position));
+            holder.creator.setText(creator.get(position));
+            holder.button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    meetingActivity.showmeetinglocation(lat.get(position), lng.get(position));
+                }
+            });
+            if (imageurl.get(position).size() > 0) {
+                HorizontalAdapter horizontalAdapter = new HorizontalAdapter(meetingActivity, imageurl.get(position));
+                final LinearLayoutManager horizontalLayoutManagaer
+                        = new LinearLayoutManager(meetingActivity, LinearLayoutManager.HORIZONTAL, false);
+                holder.recyclerView.setLayoutManager(horizontalLayoutManagaer);
+                holder.recyclerView.setAdapter(horizontalAdapter);
+                holder.recyclerView.setVisibility(View.VISIBLE);
+            } else {
+                holder.recyclerView.setVisibility(View.GONE);
             }
-        });
-        if (imageurl.get(position).size() > 0)
-        {
-            HorizontalAdapter horizontalAdapter = new HorizontalAdapter(meetingActivity, imageurl.get(position));
-            final LinearLayoutManager horizontalLayoutManagaer
-                    = new LinearLayoutManager(meetingActivity, LinearLayoutManager.HORIZONTAL, false);
-            holder.recyclerView.setLayoutManager(horizontalLayoutManagaer);
-            holder.recyclerView.setAdapter(horizontalAdapter);
-            holder.recyclerView.setVisibility(View.VISIBLE);
         }
-        else
-        {
-            holder.recyclerView.setVisibility(View.GONE);
+        else{
+            holder.description.setText(description.get(position));
+            holder.id.setText(id.get(position));
+            holder.created.setText(created.get(position));
+            holder.creator.setVisibility(View.GONE);
+            holder.button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    profileMeetingsFragment.showmeetinglocation(lat.get(position), lng.get(position));
+                }
+            });
+            if (imageurl.get(position).size() > 0) {
+                HorizontalAdapter horizontalAdapter = new HorizontalAdapter(profileMeetingsFragment, imageurl.get(position));
+                final LinearLayoutManager horizontalLayoutManagaer
+                        = new LinearLayoutManager(profileMeetingsFragment.context, LinearLayoutManager.HORIZONTAL, false);
+                holder.recyclerView.setLayoutManager(horizontalLayoutManagaer);
+                holder.recyclerView.setAdapter(horizontalAdapter);
+                holder.recyclerView.setVisibility(View.VISIBLE);
+            } else {
+                holder.recyclerView.setVisibility(View.GONE);
+            }
         }
 
     }

@@ -1,15 +1,13 @@
 package com.vp6.anish.madguysmarketers;
 
-import android.*;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
@@ -23,7 +21,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -112,6 +109,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 });
 
             }
+
+
         }
     }
 
@@ -139,6 +138,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     public void sendmaplocation(View view) {
+
         Intent intent = new Intent();
         try {
             intent.putExtra("Latitude", markedlocation.latitude + "");

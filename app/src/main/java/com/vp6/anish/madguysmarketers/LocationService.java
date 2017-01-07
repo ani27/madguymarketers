@@ -6,11 +6,9 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -21,18 +19,12 @@ import android.provider.CallLog;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -166,7 +158,7 @@ public class LocationService extends Service {
 
             if (is_more && is_less) {
                 builder = new NotificationCompat.Builder(service)
-                        .setSmallIcon(R.drawable.settings)
+                        .setSmallIcon(R.drawable.map)
                         .setContentTitle("MadGuys Marketers")
                         .setContentText("Gps is disabled. Turn on the gps");
 
@@ -181,9 +173,11 @@ public class LocationService extends Service {
 
         @Override
         public void onProviderEnabled(String provider) {
-            builder.setOngoing(false);
-            manager.cancel(0);
-            Log.e(TAG, "onProviderEnabled: " + provider);
+            if (builder != null) {
+                builder.setOngoing(false);
+                manager.cancel(0);
+                Log.e(TAG, "onProviderEnabled: " + provider);
+            }
         }
 
         @Override
@@ -268,7 +262,7 @@ public class LocationService extends Service {
 
     LocationListener[] mLocationListeners = new LocationListener[]{
             new LocationListener(LocationManager.GPS_PROVIDER, LocationService.this),
-            new LocationListener(LocationManager.NETWORK_PROVIDER, LocationService.this)
+//            new LocationListener(LocationManager.NETWORK_PROVIDER, LocationService.this)
     };
 
     @Override
@@ -297,21 +291,22 @@ public class LocationService extends Service {
         } catch (IllegalArgumentException ex) {
             Log.d(TAG, "gps provider does not exist " + ex.getMessage());
         }
-        try {
-            mLocationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
-                    mLocationListeners[1]);
-        } catch (java.lang.SecurityException ex) {
-            Log.i(TAG, "fail to request location update, ignore", ex);
-        } catch (IllegalArgumentException ex) {
-            Log.d(TAG, "network provider does not exist, " + ex.getMessage());
-        }
+//        try {
+//            mLocationManager.requestLocationUpdates(
+//                    LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+//                    mLocationListeners[1]);
+//        } catch (java.lang.SecurityException ex) {
+//            Log.i(TAG, "fail to request location update, ignore", ex);
+//        } catch (IllegalArgumentException ex) {
+//            Log.d(TAG, "network provider does not exist, " + ex.getMessage());
+//        }
     }
 
     @Override
     public void onDestroy() {
         Log.e(TAG, "onDestroy");
         super.onDestroy();
+
         if (mLocationManager != null) {
             for (int i = 0; i < mLocationListeners.length; i++) {
                 try {
@@ -325,6 +320,9 @@ public class LocationService extends Service {
                 }
             }
         }
+
+        Intent intent = new Intent("com.android.locservice");
+        sendBroadcast(intent);
     }
 
     private void initializeLocationManager() {

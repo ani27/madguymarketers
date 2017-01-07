@@ -1,13 +1,9 @@
 package com.vp6.anish.madguysmarketers;
 
-import android.annotation.TargetApi;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.os.Build;
-import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -15,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -28,7 +25,11 @@ public class LoginActivity extends AppCompatActivity {
     EditText name;
     EditText workingto;
     EditText workingfrom;
+    TextView workinghours;
+    TextView to;
     Button login;
+    Button signinredirect;
+    boolean onsignuppage = true;
     String id;
     java.util.Calendar mcurrentTime;
     long workingstart = 8 * 60;
@@ -44,6 +45,34 @@ public class LoginActivity extends AppCompatActivity {
         workingto = (EditText)findViewById(R.id.working_to);
         workingfrom.setInputType(InputType.TYPE_NULL);
         workingto.setInputType(InputType.TYPE_NULL);
+        workinghours = (TextView)findViewById(R.id.textView2);
+        to = (TextView)findViewById(R.id.textView3);
+        signinredirect = (Button)findViewById(R.id.signinredirect);
+        signinredirect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onsignuppage){
+                    login.setText("Sign In");
+                    workingfrom.setVisibility(View.GONE);
+                    workingto.setVisibility(View.GONE);
+                    name.setVisibility(View.GONE);
+                    workinghours.setVisibility(View.GONE);
+                    to.setVisibility(View.GONE);
+                    signinredirect.setText("Not a member? Sign Up");
+                    onsignuppage = false;
+                }
+                else{
+                    login.setText("Sign Up");
+                    workingfrom.setVisibility(View.VISIBLE);
+                    workingto.setVisibility(View.VISIBLE);
+                    name.setVisibility(View.VISIBLE);
+                    workinghours.setVisibility(View.VISIBLE);
+                    to.setVisibility(View.VISIBLE);
+                    signinredirect.setText("Already a member? Sign In");
+                    onsignuppage = true;
+                }
+            }
+        });
 
 
         workingfrom.setOnClickListener(new View.OnClickListener() {
@@ -161,11 +190,20 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+
         if(SessionManager.getIsAuthenticated(LoginActivity.this)){
             Intent intent = new Intent(LoginActivity.this, PermissionActivity.class);
             startActivity(intent);
             finish();
         }
+        if(SessionManager.getHasEnteredNumber(this)){
+
+            Intent intent = new Intent(LoginActivity.this, OtpActivity.class);
+            startActivity(intent);
+            finish();
+
+        }
+
 
     }
 
@@ -187,11 +225,11 @@ public class LoginActivity extends AppCompatActivity {
                         // do stuff with the result or error
                         String id;
                         try {
-                            Log.i("ID_ASYNC", result.get("_id").getAsString());
+                            //Log.i("ID_ASYNC", result.get("_id").getAsString());
                             id = result.get("_id").getAsString();
 
                             Intent intent = new Intent(LoginActivity.this,OtpActivity.class);
-                            Log.i("ID_LOGIN", id);
+                           /// Log.i("ID_LOGIN", id);
                             intent.putExtra("id", id);
                             intent.putExtra("number", number.getText().toString().trim());
                             intent.putExtra("name", name.getText().toString().trim());

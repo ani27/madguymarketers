@@ -1,22 +1,19 @@
 package com.vp6.anish.madguysmarketers;
 
-import android.*;
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.CallLog;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.RequiresApi;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,7 +23,6 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,14 +30,15 @@ import java.util.Map;
 public class PermissionActivity extends AppCompatActivity {
 
     TextView Authorization;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_permission);
-        Authorization = (TextView)findViewById(R.id.authorization);
-
-        if(Build.VERSION.SDK_INT >= 23)
-        requestpermissions();
+        Authorization = (TextView) findViewById(R.id.authorization);
+        DatabaseHandler.initInstance(getApplicationContext());
+        if (Build.VERSION.SDK_INT >= 23)
+            requestpermissions();
         else
             checkauth();
 
@@ -73,6 +70,7 @@ public class PermissionActivity extends AppCompatActivity {
                 requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),
                         REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
 
+                return;
             }
             requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),
                     REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
@@ -113,16 +111,48 @@ public class PermissionActivity extends AppCompatActivity {
                 if (perms.get(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                         && perms.get(Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED
                         && perms.get(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-                        && perms.get(Manifest.permission.READ_PHONE_STATE)==PackageManager.PERMISSION_GRANTED
-                        && perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ) {
+                        && perms.get(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
+                        && perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                     // All Permissions Granted
                     //insertDummyContact();
                     checkauth();
                 } else {
                     // Permission Denied
-                    Toast.makeText(PermissionActivity.this, "Some Permission is Denied.", Toast.LENGTH_SHORT)
+
+                    new android.support.v7.app.AlertDialog.Builder(this)
+                            .setTitle("Permission")
+                            .setMessage("Permissions must be granted to proceeed further.")
+                            .setPositiveButton("Grant Permission", new DialogInterface.OnClickListener() {
+                                @RequiresApi(api = Build.VERSION_CODES.M)
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // continue with delete
+                                    dialog.cancel();
+                                    boolean showRationale_read = shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE);
+                                    boolean showRationale_write = shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                                    boolean showRationale_calllogs = shouldShowRequestPermissionRationale(Manifest.permission.READ_CALL_LOG);
+                                    boolean showRationale_location = shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION);
+                                    boolean showRationale_phonestate = shouldShowRequestPermissionRationale(Manifest.permission.READ_PHONE_STATE);
+
+                                    if (!showRationale_read && !showRationale_write && !showRationale_calllogs && !showRationale_location && !showRationale_phonestate) {
+                                        goToSettings();
+                                    } else
+                                        requestpermissions();
+
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                    dialog.cancel();
+                                    PermissionActivity.this.finish();
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
-                    checkauth();
+
+                    //Toast.makeText(PermissionActivity.this, "Some Permission is Denied.", Toast.LENGTH_SHORT)
+                    //      .show();
+                    //  checkauth();
                 }
             }
             break;
@@ -131,8 +161,8 @@ public class PermissionActivity extends AppCompatActivity {
         }
     }
 
-    public void checkauth(){
-        if(isNetworkAvailable()) {
+    public void checkauth() {
+        if (isNetworkAvailable()) {
             Ion.with(PermissionActivity.this)
                     .load("GET", getString(R.string.base_url).concat("checkauth/"))
                     .setHeader("x-access-token", SessionManager.getjwt(PermissionActivity.this))
@@ -146,11 +176,11 @@ public class PermissionActivity extends AppCompatActivity {
 
                                 boolean isauth = result.get("auth").getAsBoolean();
                                 boolean isadmin = result.get("admin").getAsBoolean();
-                                Log.i("per", isauth+" "+isadmin);
+                                Log.i("per", isauth + " " + isadmin);
                                 if (isauth) {
                                     Authorization.setText("You are authorized");
                                     SessionManager.setIsAuthorized(PermissionActivity.this, true);
-                                    Log.i("per if", isauth+" "+isadmin);
+                                    Log.i("per if", isauth + " " + isadmin);
                                     if (isadmin)
                                         SessionManager.setIsAdmin(PermissionActivity.this, true);
                                     else
@@ -172,13 +202,12 @@ public class PermissionActivity extends AppCompatActivity {
                     });
 
 
-        }
-        else
-        {
+        } else {
 
             Toast.makeText(PermissionActivity.this, "Connect to Internet First and try again", Toast.LENGTH_SHORT).show();
         }
     }
+
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -186,8 +215,13 @@ public class PermissionActivity extends AppCompatActivity {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-
-
+    private void goToSettings() {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.parse("package:" + getPackageName());
+        intent.setData(uri);
+        startActivity(intent);
+    }
 
 
 }

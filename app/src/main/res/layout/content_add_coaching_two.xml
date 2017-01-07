@@ -18,6 +18,11 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_coaching_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -30,11 +35,18 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="5dp"
                 />
+            </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_director_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/input_layout_coaching_name">
+
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:hint="Director's Name"
-                android:layout_below="@+id/coaching_name"
+                android:layout_below="@+id/input_layout_coaching_name"
                 android:id="@+id/director_name"
                 android:paddingLeft="3dp"
                 android:gravity="center_vertical"
@@ -44,105 +56,8 @@
                 android:layout_marginTop="5dp"
                 />
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:hint="State"
-                android:singleLine="true"
-                android:layout_below="@+id/director_name"
-                android:gravity="center_vertical"
-                android:elevation="3dp"
-                android:paddingLeft="1dp"
-                android:id="@+id/state"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp"
-                />
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:hint="City"
-                android:layout_below="@+id/state"
-                android:gravity="center_vertical"
-                android:elevation="3dp"
-                android:singleLine="true"
-                android:paddingLeft="1dp"
-                android:id="@+id/city"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp"
-                />
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:hint="Address"
-                android:singleLine="true"
-                android:layout_below="@+id/city"
-                android:gravity="center_vertical"
-                android:elevation="3dp"
-                android:paddingLeft="1dp"
-                android:id="@+id/address"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp"
-                />
+            </android.support.design.widget.TextInputLayout>
 
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:hint="Pin Code"
-                android:layout_below="@+id/address"
-                android:gravity="center_vertical"
-                android:elevation="3dp"
-                android:singleLine="true"
-                android:inputType="text"
-                android:paddingLeft="1dp"
-                android:id="@+id/pincode"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp"
-                />
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:hint="Mobile Number"
-                android:layout_below="@+id/pincode"
-                android:gravity="center_vertical"
-                android:elevation="3dp"
-                android:singleLine="true"
-                android:inputType="text"
-                android:paddingLeft="1dp"
-                android:id="@+id/mobile_number"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp"
-                />
-
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:hint="Hardware Given"
-                android:layout_below="@+id/mobile_number"
-                android:gravity="center_vertical"
-                android:elevation="3dp"
-                android:singleLine="true"
-                android:paddingLeft="1dp"
-                android:id="@+id/hardware"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp"
-                />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:hint="Total Students"
-                android:layout_below="@+id/hardware"
-                android:gravity="center_vertical"
-                android:elevation="3dp"
-                android:inputType="text"
-                android:paddingLeft="1dp"
-                android:singleLine="true"
-                android:id="@+id/total_student"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp"
-                />
 
 
             <LinearLayout
@@ -150,7 +65,7 @@
                 android:layout_height="100dp"
                 android:weightSum="2"
                 android:id="@+id/complete_map"
-                android:layout_below="@+id/total_student"
+                android:layout_below="@+id/input_layout_director_name"
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="5dp">
                 <LinearLayout
@@ -192,6 +107,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/map_button"
                     android:text="Map"
+                    android:layout_marginTop="25dp"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
                     android:layout_weight="1"
@@ -202,11 +118,166 @@
             </LinearLayout>
 
 
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/complete_map">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="State"
+                android:singleLine="true"
+                android:layout_below="@+id/input_layout_director_name"
+                android:gravity="center_vertical"
+                android:elevation="3dp"
+                android:paddingLeft="1dp"
+                android:id="@+id/state"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/input_layout_state">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="City"
+                android:gravity="center_vertical"
+                android:elevation="3dp"
+                android:singleLine="true"
+                android:paddingLeft="1dp"
+                android:id="@+id/city"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/input_layout_city">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Address"
+                android:inputType="textMultiLine"
+                android:minLines="2"
+                android:maxLines="6"
+                android:gravity="center_vertical"
+                android:elevation="3dp"
+                android:paddingLeft="1dp"
+                android:id="@+id/address"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_pincode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/input_layout_address">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Pin Code"
+                android:gravity="center_vertical"
+                android:elevation="3dp"
+                android:singleLine="true"
+                android:inputType="text"
+                android:paddingLeft="1dp"
+                android:id="@+id/pincode"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_mobile_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/input_layout_pincode">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Mobile Number"
+                android:gravity="center_vertical"
+                android:elevation="3dp"
+                android:singleLine="true"
+                android:inputType="text"
+                android:paddingLeft="1dp"
+                android:id="@+id/mobile_number"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_hardware_given"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/input_layout_mobile_number">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Hardware Given"
+                android:gravity="center_vertical"
+                android:elevation="3dp"
+                android:singleLine="true"
+                android:paddingLeft="1dp"
+                android:id="@+id/hardware"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_total_students"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/input_layout_hardware_given">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Total Students"
+                android:gravity="center_vertical"
+                android:elevation="3dp"
+                android:inputType="text"
+                android:paddingLeft="1dp"
+                android:singleLine="true"
+                android:id="@+id/total_student"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_total_students_having_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/input_layout_total_students">
+
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:hint="Total Students having mobile phone"
-                android:layout_below="@+id/complete_map"
                 android:gravity="center_vertical"
                 android:elevation="3dp"
                 android:paddingLeft="1dp"
@@ -216,6 +287,7 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="5dp"
                 />
+            </android.support.design.widget.TextInputLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -224,7 +296,7 @@
                 android:id="@+id/complete_coaching_status"
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="5dp"
-                android:layout_below="@+id/total_students_having_mobile_phone">
+                android:layout_below="@+id/input_layout_total_students_having_phone">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -246,11 +318,16 @@
                 </Spinner>
             </LinearLayout>
 
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_exam_teaching"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/complete_coaching_status">
+
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:hint="Exam Teaching"
-                android:layout_below="@+id/complete_coaching_status"
                 android:gravity="center_vertical"
                 android:elevation="3dp"
                 android:singleLine="true"
@@ -259,6 +336,7 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="5dp"
                 />
+</android.support.design.widget.TextInputLayout>
 
 
 
@@ -266,7 +344,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
-                android:layout_below="@id/exam_teaching"
+                android:layout_below="@id/input_layout_exam_teaching"
                 android:text="Add Coaching"
                 android:onClick="addcoaching"/>
 

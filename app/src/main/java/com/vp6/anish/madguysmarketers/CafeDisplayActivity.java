@@ -11,22 +11,19 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -40,7 +37,6 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class CafeDisplayActivity extends AppCompatActivity {
@@ -65,6 +61,7 @@ public class CafeDisplayActivity extends AppCompatActivity {
     TextView phone_number;
     TextView pincode;
     TextView city;
+    TextView city_above;
     TextView state;
     String lat;
     String lng;
@@ -78,15 +75,20 @@ public class CafeDisplayActivity extends AppCompatActivity {
     ImageView ownerphoto;
     ImageView cafephoto;
     ProgressBar progressBar;
-
+    Toolbar toolBar;
+    CollapsingToolbarLayout collapsingToolbarLayout;
     RelativeLayout relativeLayout;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cafe_display);
-       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-       getSupportActionBar().setTitle("Cafe");
+//        toolBar = (Toolbar)findViewById(R.id.toolbar);
+//        collapsingToolbarLayout= (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
+
+//        setSupportActionBar(toolBar);
+//        getSupportActionBar().setTitle("");
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         cafephotoaddress = new ArrayList<>();
         agreementphotoaddress = new ArrayList<>();
         cafephotoupload = new ArrayList<>();
@@ -99,6 +101,7 @@ public class CafeDisplayActivity extends AppCompatActivity {
         phone_number  = (TextView)findViewById(R.id.phone_number_display);
         pincode = (TextView)findViewById(R.id.pincode_display);
         city  = (TextView)findViewById(R.id.city_diplay);
+        city_above  = (TextView)findViewById(R.id.city_display);
         state  = (TextView)findViewById(R.id.state_display);
         hardware  = (TextView)findViewById(R.id.hardware_display);
         cafestatus  = (TextView)findViewById(R.id.cafestatus_display);
@@ -153,8 +156,10 @@ public class CafeDisplayActivity extends AppCompatActivity {
                                 ownername.setText(owner);
                                 if(!state_.equals(""))
                                 state.setText(state_);
-                                if(!city_.equals(""))
-                                city.setText(city_);
+                                if(!city_.equals("")) {
+                                    city.setText(city_);
+                                    city_above.setText(city_);
+                                }
                                 if(!pincode_.toString().equals(""))
                                     pincode.setText(pincode_.toString());
                                 if (!address_.equals(""))
@@ -275,7 +280,7 @@ public class CafeDisplayActivity extends AppCompatActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Choose type to Add photos");
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(CafeDisplayActivity.this, android.R.layout.select_dialog_singlechoice);
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(CafeDisplayActivity.this, android.R.layout.select_dialog_item);
         arrayAdapter.add("Cafe Photos");
         arrayAdapter.add("Agreement Photos");
 

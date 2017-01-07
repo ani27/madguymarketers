@@ -7,382 +7,508 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.vp6.anish.madguysmarketers.CafeDisplayActivity"
-    tools:showIn="@layout/cafe_display"
-    >
+    tools:showIn="@layout/cafe_display">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:nestedScrollingEnabled="true">
+        android:layout_height="match_parent">
+
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="2dp">
-    <Button
-        android:text="Add Photos"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:onClick="addphotos" />
+            android:layout_height="match_parent">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:onClick="editcafe"
-        android:text="Edit"
-        android:id="@+id/edit_query"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:weightSum="5"
-        android:id="@+id/complete_owner_information"
-        android:layout_below="@+id/edit_query"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="10dp">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:weightSum="2"
-            android:orientation="vertical">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:text="Owner Name"
-                android:textSize="17dp"
-                android:id="@+id/owner_name_display"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="5dp"
-                android:textStyle="bold"
-                android:elevation="3dp"
-                android:layout_weight="1"
-                />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:text="Owner Number"
-                android:textSize="17dp"
-                android:id="@+id/phone_number_display"
-                android:layout_marginBottom="5dp"
-                android:gravity="center_vertical"
-                android:textStyle="bold"
-                android:elevation="3dp"
-                android:layout_weight="1"
-                />
-        </LinearLayout>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="95dp"
-            android:id="@+id/owner_photo2"
-
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_weight="3"
-            android:src="@drawable/user"
-            android:onClick="ownerphoto"
-            android:elevation="3dp"
-            />
-
-    </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@android:color/darker_gray"
-        android:id="@+id/phone_number_complete_"
-        android:layout_below="@+id/complete_owner_information"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:weightSum="5"
-        android:id="@+id/state_complete"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="5dp"
-        android:layout_below="@id/phone_number_complete_"
-        >
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="State"
-            android:textSize="17dp"
-            android:id="@+id/state_text"
-
-            android:textStyle="bold"
-            android:elevation="3dp"
-            android:layout_weight="3.5"
-            android:gravity="center_vertical"
-
-            />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="  "
-            android:textSize="17dp"
-            android:id="@+id/state_display"
-
-            android:textStyle="bold"
-            android:elevation="3dp"
-            android:layout_weight="1.5"
-            android:gravity="center_vertical"
-            />
-    </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@android:color/darker_gray"
-        android:id="@+id/state_complete_"
-        android:layout_below="@+id/state_complete"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:weightSum="5"
-        android:layout_below="@+id/state_complete_"
-        android:id="@+id/city_complete"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="5dp"
-        >
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="City"
-            android:textSize="17dp"
-            android:id="@+id/city_text"
-
-            android:textStyle="bold"
-            android:elevation="3dp"
-            android:layout_weight="3.5"
-            android:gravity="center_vertical"
-
-            />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text=" "
-            android:textSize="17dp"
-            android:id="@+id/city_diplay"
-            android:textStyle="bold"
-            android:elevation="3dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-
-            />
-
-
-
-    </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@android:color/darker_gray"
-        android:id="@+id/city_complete_"
-        android:layout_below="@+id/city_complete"/>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:weightSum="2"
-        android:id="@+id/map_complete"
-        android:layout_below="@+id/city_complete_"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="5dp">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="Map Location"
-            android:textSize="17dp"
-            android:id="@+id/map_text"
-            android:textStyle="bold"
-            android:elevation="3dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-
-            />
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="View on Map"
-            android:textSize="17dp"
-            android:id="@+id/map_diplay"
-
-            android:elevation="3dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:onClick="viewonmap"
-
-            />
-    </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@android:color/darker_gray"
-        android:id="@+id/map_complete_"
-        android:layout_below="@+id/map_complete"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:weightSum="5"
-        android:id="@+id/hardware_complete"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="5dp"
-        android:layout_below="@+id/map_complete_"
-        >
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="Hardware"
-            android:textSize="17dp"
-            android:id="@+id/hardware_text"
-
-            android:textStyle="bold"
-            android:elevation="3dp"
-            android:layout_weight="3.5"
-            android:gravity="center_vertical"
-
-            />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="  "
-            android:textSize="17dp"
-            android:id="@+id/hardware_display"
-
-            android:textStyle="bold"
-            android:elevation="3dp"
-            android:layout_weight="1.5"
-            android:gravity="center_vertical"
-            />
-    </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@android:color/darker_gray"
-        android:id="@+id/hardware_complete_"
-        android:layout_below="@+id/hardware_complete"/>
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:text="Photo Gallery"
-        android:id="@+id/photo_gallery_text"
-        android:layout_below="@+id/hardware_complete_"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/photo_gallery_text"
-        android:weightSum="2"
-        android:id="@+id/photo_gallery"
-        android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:weightSum="5"
-            android:orientation="horizontal">
-            <TextView
+            <RelativeLayout
+                android:id="@+id/toolbarview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="3.5"
-                android:text="Cafe Photos"
-                android:id="@+id/cafe_photo_number"
-                android:gravity="center"/>
-            <android.support.v7.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_weight="1.5"
-                android:orientation="horizontal"
-                android:id="@+id/cafe_photo_recyclerview"
-                android:visibility="gone"/>
+                android:background="@color/colorPrimary"
+                android:paddingTop="12dp">
 
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:weightSum="5"
-            android:layout_marginTop="5dp"
-            android:orientation="horizontal">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/cafe_image"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/ic_cafe" />
 
-            <TextView
+
+                <TextView
+                    android:id="@+id/cafe_name_display"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/cafe_image"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:maxLines="1"
+                    android:text="Cafe Name"
+                    android:textColor="@color/cardview_light_background"
+                    android:textSize="17dp" />
+
+                <TextView
+                    android:id="@+id/city_display"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/cafe_name_display"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:maxLines="1"
+                    android:text="City"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/cardview_light_background" />
+
+
+                <TextView
+                    android:id="@+id/cafestatus_display"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/city_display"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="10dp"
+                    android:maxLines="1"
+                    android:text="Status"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/cardview_light_background" />
+
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/profile_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:elevation="10dp"
+                    android:foregroundGravity="top|right"
+                    android:onClick="editcafe"
+                    android:src="@drawable/edit" />
+            </RelativeLayout>
+
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="3.5"
-                android:text="Agreement Photos"
-                android:id="@+id/partnership_agreement_photo_number"
-                android:gravity="center"/>
-            <android.support.v7.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_weight="1.5"
-                android:orientation="horizontal"
-                android:id="@+id/partnership_agreement_photo_recyclerview"
-                android:visibility="gone"/>
+                android:layout_below="@+id/toolbarview"
+                android:background="@color/black_20"
+                android:padding="10dp">
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/complete_owner_information"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    app:cardElevation="2dp"
+                    app:cardUseCompatPadding="true">
 
 
-        </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:weightSum="4">
 
-    </LinearLayout>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@android:color/darker_gray"
-        android:id="@+id/partnership_agreement_photo_recyclerview_"
-        android:layout_below="@+id/photo_gallery"/>
+                        <ImageView
+                            android:id="@+id/owner_photo2"
+                            android:layout_width="90dp"
+                            android:layout_height="90dp"
+                            android:layout_weight="1.5"
+                            android:onClick="ownerphoto"
+                            android:src="@drawable/profile" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:weightSum="2"
-        android:layout_below="@+id/partnership_agreement_photo_recyclerview_"
-        android:id="@+id/complete_meeting"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="5dp"
-        >
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="Meetings"
-            android:textSize="17dp"
-            android:id="@+id/meeting_text"
-            android:textStyle="bold"
-            android:elevation="3dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            />
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="Browse"
-            android:textSize="17dp"
-            android:id="@+id/browse_meeting"
-            android:textStyle="bold"
-            android:elevation="3dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:onClick="browsemeetings"
-            />
-    </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="15dp"
+                            android:layout_weight="2.5"
+                            android:orientation="vertical"
+                            android:weightSum="2">
+
+                            <TextView
+                                android:id="@+id/owner_name_display"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="bottom"
+                                android:text="Director Name"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="17dp" />
+
+                            <TextView
+                                android:id="@+id/phone_number_display"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="top"
+                                android:text="Owner Number"
+                                android:textColor="@color/icon_disabled"
+                                android:textSize="15dp" />
+                        </LinearLayout>
 
 
-<ProgressBar
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:id="@+id/progressBar_display_cafe"
-android:layout_centerVertical="true"
-android:layout_centerHorizontal="true"
-android:progressDrawable="@drawable/circular_progress_bar"
-android:background="@drawable/circle_shape" />
+                    </LinearLayout>
+
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/complete_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/complete_owner_information"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/white"
+                    android:elevation="2dp"
+                    app:cardUseCompatPadding="true">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="5dp">
+
+                        <TextView
+                            android:id="@+id/address_heading"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="ADDRESS"
+                            android:textSize="20dp"
+                            android:textStyle="bold" />
+
+                        <android.support.design.widget.FloatingActionButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentTop="true"
+                            android:onClick="viewonmap"
+                            android:src="@drawable/map" />
+
+                        <LinearLayout
+                            android:id="@+id/state_complete"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_below="@+id/address_heading"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="10dp"
+                            android:weightSum="5">
+
+                            <TextView
+                                android:id="@+id/state_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_weight="3.5"
+                                android:elevation="3dp"
+                                android:gravity="center_vertical"
+                                android:text="State : "
+                                android:textColor="@color/icon_disabled"
+                                android:textSize="15dp"
+
+                                />
+
+                            <TextView
+                                android:id="@+id/state_display"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_weight="1.5"
+                                android:elevation="3dp"
+                                android:gravity="center_vertical"
+                                android:text="  "
+                                android:textColor="@color/black"
+                                android:textSize="15dp" />
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:id="@+id/city_complete"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_below="@+id/state_complete"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="10dp"
+                            android:weightSum="5">
+
+                            <TextView
+                                android:id="@+id/city_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_weight="3.5"
+                                android:elevation="3dp"
+                                android:gravity="center_vertical"
+                                android:text="City : "
+                                android:textSize="15dp"
+
+                                />
+
+                            <TextView
+                                android:id="@+id/city_diplay"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_weight="1.5"
+                                android:elevation="3dp"
+                                android:gravity="center_vertical"
+                                android:text=" "
+                                android:textSize="15dp" />
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:id="@+id/map_complete"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_below="@+id/city_complete"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="10dp"
+                            android:weightSum="5">
+
+                            <TextView
+                                android:id="@+id/address_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_weight="3.5"
+                                android:elevation="3dp"
+                                android:gravity="center_vertical"
+                                android:text="Address : "
+                                android:textSize="15dp" />
+
+                            <TextView
+                                android:id="@+id/address_display"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_weight="1.5"
+                                android:elevation="3dp"
+                                android:gravity="center_vertical"
+                                android:text=" "
+                                android:textSize="15dp" />
+
+                            />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/pincode_complete"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_below="@+id/map_complete"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="10dp"
+                            android:weightSum="5">
+
+                            <TextView
+                                android:id="@+id/pincode_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_weight="3.5"
+                                android:elevation="3dp"
+                                android:gravity="center_vertical"
+                                android:text="Pincode : "
+                                android:textSize="15dp" />
+
+                            <TextView
+                                android:id="@+id/pincode_display"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_weight="1.5"
+                                android:elevation="3dp"
+                                android:gravity="center_vertical"
+                                android:text=" "
+                                android:textSize="15dp" />
+
+                            />
+                        </LinearLayout>
+
+                    </RelativeLayout>
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/otherinfo_complete"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/complete_address"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/white"
+                    android:elevation="2dp"
+                    app:cardUseCompatPadding="true">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="5dp">
+
+                        <TextView
+                            android:id="@+id/otherinfo_heading"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="Other Info"
+                            android:textSize="20dp"
+                            android:textStyle="bold" />
+
+
+                        <LinearLayout
+                            android:id="@+id/hardware_complete"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_below="@+id/otherinfo_heading"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="10dp"
+                            android:weightSum="5">
+
+                            <TextView
+                                android:id="@+id/hardware_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_weight="3.5"
+                                android:elevation="3dp"
+                                android:gravity="center_vertical"
+                                android:text="Hardware"
+                                android:textSize="15dp" />
+
+                            <TextView
+                                android:id="@+id/hardware_display"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_weight="1.5"
+                                android:elevation="3dp"
+                                android:gravity="center_vertical"
+                                android:text="  "
+                                android:textSize="15dp" />
+                        </LinearLayout>
+                    </RelativeLayout>
+                </android.support.v7.widget.CardView>
+
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/complete_gallery"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/otherinfo_complete"
+                    android:layout_marginTop="10dp"
+                    android:elevation="2dp"
+                    app:cardUseCompatPadding="true">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="5dp">
+
+
+                        <TextView
+                            android:id="@+id/photo_gallery_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="Photo Gallery"
+                            android:textSize="20dp"
+                            android:textStyle="bold" />
+
+                        <android.support.design.widget.FloatingActionButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentTop="true"
+                            android:onClick="addphotos"
+                            android:src="@android:drawable/ic_menu_add" />
+
+
+                        <LinearLayout
+                            android:id="@+id/photo_gallery"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/photo_gallery_text"
+                            android:orientation="vertical"
+                            android:weightSum="2">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:weightSum="5">
+
+                                <TextView
+                                    android:id="@+id/cafe_photo_number"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="4"
+                                    android:gravity="center"
+                                    android:text="Cafe Photos" />
+
+                                <android.support.v7.widget.RecyclerView
+                                    android:id="@+id/cafe_photo_recyclerview"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="150dp"
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal"
+                                    android:visibility="gone" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:weightSum="5">
+
+                                <TextView
+                                    android:id="@+id/partnership_agreement_photo_number"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="4"
+                                    android:gravity="center"
+                                    android:text="Agreement Photos" />
+
+                                <android.support.v7.widget.RecyclerView
+                                    android:id="@+id/partnership_agreement_photo_recyclerview"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="150dp"
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal"
+                                    android:visibility="gone" />
+
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+                    </RelativeLayout>
+                </android.support.v7.widget.CardView>
+
+
+                <LinearLayout
+                    android:id="@+id/complete_meeting"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_below="@+id/complete_gallery"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="10dp">
+
+
+                    <Button
+                        android:id="@+id/browse_meeting"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:elevation="3dp"
+                        android:gravity="center"
+                        android:onClick="browsemeetings"
+                        android:text="Browse Meetings"
+                        android:textSize="17dp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar_display_cafe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/circle_shape"
+        android:progressDrawable="@drawable/circular_progress_bar" />
 </RelativeLayout>
-</ScrollView>
-    </RelativeLayout>
 
 

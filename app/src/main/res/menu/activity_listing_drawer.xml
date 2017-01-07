@@ -11,6 +11,11 @@
             android:icon="@drawable/settings"
             android:title="Admin Control" />
 
+        <item
+            android:id="@+id/nav_help"
+            android:icon="@android:drawable/ic_menu_help"
+            android:title="Help" />
+
     </group>
 
 

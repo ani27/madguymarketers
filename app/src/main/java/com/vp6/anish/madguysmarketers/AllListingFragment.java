@@ -4,12 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +40,14 @@ public class AllListingFragment extends Fragment {
     public ArrayList<String> mData_name;
     public ArrayList<String> mData_type;
     public ArrayList<String> mData_id;
+    public ArrayList<String> mData_phone_number;
+    public ArrayList<String> mData_status;
+    public ArrayList<String> mData_address;
+    public ArrayList<String> mData_lat;
+    public ArrayList<String> mData_lng;
     public ArrayList<String> mData_imageurl;
+    private FloatingActionButton fab_map_all;
+
     public OnFragmentInteractionListener mListener;
     RecyclerView recyclerView;
     ListingAdapter listingAdapter;
@@ -90,6 +96,12 @@ public class AllListingFragment extends Fragment {
         mData_type = new ArrayList<>();
         mData_id = new ArrayList<>();
         mData_imageurl = new ArrayList<>();
+        mData_lat = new ArrayList<>();
+        mData_lng = new ArrayList<>();
+        mData_address = new ArrayList<>();
+        mData_phone_number = new ArrayList<>();
+        mData_status = new ArrayList<>();
+
         View v =  inflater.inflate(R.layout.fragment_all_listing, container, false);
         if(mListener != null) {
             mData = mListener.alldatalist();
@@ -99,11 +111,33 @@ public class AllListingFragment extends Fragment {
                     mData_type = mData.get(1);
                     mData_id = mData.get(2);
                     mData_imageurl = mData.get(3);
+                    mData_status = mData.get(4);
+                    mData_address = mData.get(5);
+                    mData_phone_number = mData.get(6);
+                    mData_lat = mData.get(7);
+                    mData_lng = mData.get(8);
+
                 }
             }
         }
+        fab_map_all = (FloatingActionButton)v.findViewById(R.id.fab_map_all);
+        fab_map_all.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent3  = new Intent(mcontext, LocationDisplayActivity.class);
+                intent3.putStringArrayListExtra("lat_list", mData_lat);
+                intent3.putStringArrayListExtra("lng_list", mData_lng);
+                intent3.putStringArrayListExtra("status_list", mData_status);
+                intent3.putStringArrayListExtra("type_list", mData_type);
+                intent3.putStringArrayListExtra("name_list", mData_name);
+                intent3.putStringArrayListExtra("address_list", mData_address);
+                intent3.putStringArrayListExtra("id_list", mData_id);
+
+                startActivity(intent3);
+            }
+        });
         recyclerView = (RecyclerView) v.findViewById(R.id.listView2);
-        listingAdapter = new ListingAdapter(mcontext,mData_imageurl,mData_name,mData_type,mData_id, AllListingFragment.this);
+        listingAdapter = new ListingAdapter(mcontext,mData_imageurl,mData_name,mData_type,mData_id,mData_phone_number,mData_status,mData_address, AllListingFragment.this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager( mcontext);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -161,6 +195,12 @@ public class AllListingFragment extends Fragment {
         mData_type = new ArrayList<>();
         mData_id = new ArrayList<>();
         mData_imageurl = new ArrayList<>();
+        mData_lat = new ArrayList<>();
+        mData_lng = new ArrayList<>();
+        mData_address = new ArrayList<>();
+        mData_phone_number = new ArrayList<>();
+        mData_status = new ArrayList<>();
+
         if(mListener != null){
             mData = mListener.alldatalist();
             if(mData != null){
@@ -169,6 +209,11 @@ public class AllListingFragment extends Fragment {
                     mData_type = mData.get(1);
                     mData_id = mData.get(2);
                     mData_imageurl = mData.get(3);
+                    mData_status = mData.get(4);
+                    mData_address = mData.get(5);
+                    mData_phone_number = mData.get(6);
+                    mData_lat = mData.get(7);
+                    mData_lng = mData.get(8);
                 }
             }
         }

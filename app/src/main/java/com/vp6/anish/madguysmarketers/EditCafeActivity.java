@@ -5,23 +5,21 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +28,10 @@ import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class EditCafeActivity extends AppCompatActivity {
 
@@ -69,7 +70,6 @@ public class EditCafeActivity extends AppCompatActivity {
         hardware = (EditText) findViewById(R.id.hardware);
         maplocation = (TextView) findViewById(R.id.exact_location);
         senddata = new ArrayList<>();
-
         cafe_status = (Spinner) findViewById(R.id.spinner_cafe_status);
 
         try {
@@ -138,6 +138,9 @@ public class EditCafeActivity extends AppCompatActivity {
             if (requestCode == map_activity) {
                 latitude = data.getStringExtra("Latitude");
                 longitude = data.getStringExtra("Longitude");
+
+                getAddressFromLocation(Double.parseDouble(latitude), Double.parseDouble(longitude), this);
+
                 // Toast.makeText(this, latitude + " " + longitude, Toast.LENGTH_SHORT).show();
                 if (!latitude.equals("0") && !longitude.equals("0")) {
                     maplocation.setText("Location added");
@@ -256,17 +259,6 @@ public class EditCafeActivity extends AppCompatActivity {
                             // do stuff with the result or error
                             Toast.makeText(EditCafeActivity.this, "Edited", Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(EditCafeActivity.this, CafeDisplayActivity.class);
-//                            intent.putExtra("cafename", cafename.getText().toString().trim());
-//                            intent.putExtra("ownername", ownername.getText().toString().trim());
-//                            intent.putExtra("phonenumber", mobilenumber.getText().toString().trim());
-//                            intent.putExtra("pincode", pincode.getText().toString().trim());
-//                            intent.putExtra("city", city.getText().toString().trim());
-//                            intent.putExtra("state", state.getText().toString().trim());
-//                            intent.putExtra("lat", latitude);
-//                            intent.putExtra("lng", longitude);
-//                            intent.putExtra("hardware", hardware.getText().toString().trim());
-//                            intent.putExtra("address", address.getText().toString().trim());
-//                            intent.putExtra("cafestatus", (cafe_status.getSelectedItem().toString().trim()));
                             intent.putExtra("id", id);
                             startActivity(intent);
                             finish();
@@ -289,6 +281,37 @@ public class EditCafeActivity extends AppCompatActivity {
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public void getAddressFromLocation(final double latitude, final double longitude, final Context context) {
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+                String result = "";
+                try {
+                    List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);
+                    if (addressList != null && addressList.size() > 0) {
+                        Address address1 = addressList.get(0);
+                        StringBuilder sb = new StringBuilder();
+                        for (int i = 0; i < address1.getMaxAddressLineIndex(); i++) {
+                            sb.append(address1.getAddressLine(i)).append("\n");
+                        }
+
+                        result = sb.toString();
+                        address.setText(result);
+                        city.setText(address1.getLocality());
+                        state.setText(address1.getAdminArea());
+                        pincode.setText(address1.getPostalCode());
+
+
+                    }
+                } catch (IOException e) {
+                    Log.e("GeoCoder", "Unable connect to Geocoder", e);
+                }
+            }
+        });
     }
 
 }
