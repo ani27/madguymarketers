@@ -59,7 +59,6 @@ public class UserListActivity extends AppCompatActivity {
                         try {
                             JsonArray members = result.get("members").getAsJsonArray();
                             //JsonArray all_listings = result.get("listings").getAsJsonArray();
-
                             for (int i = 0; i < members.size(); i++)
                             {
                                 JsonObject member = members.get(i).getAsJsonObject();
@@ -98,6 +97,10 @@ public class UserListActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void memberloc(View view){
+        Intent intent = new Intent(UserListActivity.this,AllMembersLocationActivity.class);
+        startActivity(intent);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

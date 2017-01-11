@@ -28,4 +28,17 @@
         android:progressDrawable="@drawable/circular_progress_bar"
         android:background="@drawable/circle_shape"
         />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/members_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/fab_margin"
+        android:elevation="10dp"
+        android:foregroundGravity="bottom|right"
+        android:src="@drawable/map"
+        android:onClick="memberloc"/>
+
 </RelativeLayout>

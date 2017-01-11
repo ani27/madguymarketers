@@ -207,7 +207,8 @@ public class OtpActivity extends AppCompatActivity implements SmsListener.OnSmsR
                     public void onCompleted(Exception e, JsonObject result) {
                         // do stuff with the result or error
                         try {
-
+                           // Log.i("result",result.toString());
+                           // Log.i("result",result.get("name").getAsString());
                             output.add(result.get("admin").getAsString());
                             output.add(result.get("authenticated").getAsString());
                             output.add(result.get("authorized").getAsString());

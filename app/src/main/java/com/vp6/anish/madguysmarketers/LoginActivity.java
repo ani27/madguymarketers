@@ -225,14 +225,14 @@ public class LoginActivity extends AppCompatActivity {
                         // do stuff with the result or error
                         String id;
                         try {
+                            //Log.i("result",result.toString());
                             //Log.i("ID_ASYNC", result.get("_id").getAsString());
                             id = result.get("_id").getAsString();
-
                             Intent intent = new Intent(LoginActivity.this,OtpActivity.class);
                            /// Log.i("ID_LOGIN", id);
                             intent.putExtra("id", id);
-                            intent.putExtra("number", number.getText().toString().trim());
-                            intent.putExtra("name", name.getText().toString().trim());
+                            intent.putExtra("number", result.get("phone").getAsString());
+                            intent.putExtra("name", result.get("name").getAsString());
                             intent.putExtra("workingfrom", workingstart);
                             intent.putExtra("workingto", workingend);
                             startActivity(intent);

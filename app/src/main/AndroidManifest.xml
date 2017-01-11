@@ -7,8 +7,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_SMS"/>
-    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -83,16 +83,13 @@
             android:name=".UserListActivity"
             android:label="@string/title_activity_user_list"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity android:name=".UserAuthenticateActivity" />
-
-
-        <activity android:name=".CafeDisplayActivity"
-            android:theme="@style/DisplayTheme"/>
-
-
-        <activity android:name=".CoachingDisplayActivity"
-            android:theme="@style/DisplayTheme"/>
+        <activity
+            android:name=".CafeDisplayActivity"
+            android:theme="@style/DisplayTheme" />
+        <activity
+            android:name=".CoachingDisplayActivity"
+            android:theme="@style/DisplayTheme" />
         <activity
             android:name=".EditCafeActivity"
             android:label="@string/title_activity_edit_cafe"
@@ -121,10 +118,10 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="com.android.locservice" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-
         <receiver android:name=".SmsListener">
             <intent-filter android:priority="99999">
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
@@ -152,8 +149,10 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".HelpActivity"
-            android:parentActivityName=".ListingActivity"/>
+        <activity
+            android:name=".HelpActivity"
+            android:parentActivityName=".ListingActivity" />
+        <activity android:name=".AllMembersLocationActivity"></activity>
     </application>
 
 </manifest>

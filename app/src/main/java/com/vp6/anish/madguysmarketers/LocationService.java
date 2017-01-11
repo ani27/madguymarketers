@@ -33,16 +33,16 @@ import java.util.HashMap;
 public class LocationService extends Service {
     private static final String TAG = "TESTGPS";
     private LocationManager mLocationManager = null;
-    private static final int LOCATION_INTERVAL =  5*60 * 1000;
+    private static final int LOCATION_INTERVAL = 5 * 60 * 1000;
     private static final float LOCATION_DISTANCE = 1f;
 
     private class LocationListener implements android.location.LocationListener {
         Location mLastLocation;
         Service service;
         ArrayList<String> lats = new ArrayList<>();
-        ArrayList<String>lngs = new ArrayList<>();
-        ArrayList<String>datetimes = new ArrayList<>();
-        ArrayList<ArrayList>calls = new ArrayList<>();
+        ArrayList<String> lngs = new ArrayList<>();
+        ArrayList<String> datetimes = new ArrayList<>();
+        ArrayList<ArrayList> calls = new ArrayList<>();
         NotificationCompat.Builder builder;
         NotificationManager manager;
 
@@ -71,75 +71,99 @@ public class LocationService extends Service {
             Log.i("Working from", workingfrom + " inside listener");
             Log.i("Working to", workingto + " inside listener");
 
-           if (is_more && is_less) {
-            loc.getLatitude();
-            loc.getLongitude();
-            lats.add((loc.getLatitude()) + "");
-            lngs.add(loc.getLongitude() + "");
-            Long tsLong = System.currentTimeMillis() / 1000;
-            String ts = tsLong.toString();
-            datetimes.add(ts);
-            Gson gson = new Gson();
-            String latitude = gson.toJson(lats);
-            String longitude = gson.toJson(lngs);
-            String dateandtime = gson.toJson(datetimes);
+            if (is_more && is_less) {
+                loc.getLatitude();
+                loc.getLongitude();
+                lats.add((loc.getLatitude()) + "");
+                lngs.add(loc.getLongitude() + "");
+                Long tsLong = System.currentTimeMillis() / 1000;
+                String ts = tsLong.toString();
+                datetimes.add(ts);
+//            Gson gson = new Gson();
+//          final  String latitude = gson.toJson(lats);
+//            String longitude = gson.toJson(lngs);
+//            String dateandtime = gson.toJson(datetimes);
+//
+
+                if (isNetworkAvailable() && lats.size() > 0) {
+
+                    Gson gson = new Gson();
+                    final String latitude = gson.toJson(lats);
+                    final String longitude = gson.toJson(lngs);
+                    final String dateandtime = gson.toJson(datetimes);
+                    final String last_latitude = lats.get(lats.size()-1);
+                    final String last_longitude = lngs.get(lngs.size()-1);
 
 
-            if (isNetworkAvailable()) {
+                    JsonObject json = new JsonObject();
+                    json.addProperty("lats", latitude);
+                    json.addProperty("lngs", longitude);
+                    json.addProperty("datetimes", dateandtime);
+                     Log.i("Latitude", latitude);
+                     Log.i("Longitude", longitude);
 
-                JsonObject json = new JsonObject();
-                json.addProperty("lats", latitude);
-                json.addProperty("lngs", longitude);
-                json.addProperty("datetimes", dateandtime);
+                    Ion.with(service)
+                            .load("POST", getString(R.string.url).concat("synclocation/"))
+                            .setHeader("x-access-token", SessionManager.getjwt(service))
+                            .setJsonObjectBody(json)
+                            .asJsonObject()
+                            .setCallback(new FutureCallback<JsonObject>() {
+                                @Override
+                                public void onCompleted(Exception e, JsonObject result) {
 
+                                    calls = getCallDetails();
+                                    if (calls != null && calls.size() > 0) {
 
-                Ion.with(service)
-                        .load("POST", getString(R.string.url).concat("synclocation/"))
-                        .setHeader("x-access-token", SessionManager.getjwt(service))
-                        .setJsonObjectBody(json)
-                        .asJsonObject()
-                        .setCallback(new FutureCallback<JsonObject>() {
-                            @Override
-                            public void onCompleted(Exception e, JsonObject result) {
-
-                                lats = new ArrayList<String>();
-                                lngs = new ArrayList<String>();
-                                datetimes = new ArrayList<String>();
-
-                                calls = getCallDetails();
-                                if (calls != null && calls.size() > 0) {
-
-                                    for (int i = 0; i < calls.size(); i++) {
-                                        JsonObject json_obj = new JsonObject();
-                                        json_obj.addProperty("phone", calls.get(i).get(0).toString());
-                                        json_obj.addProperty("datetime", calls.get(i).get(1).toString());
-                                        json_obj.addProperty("duration", calls.get(i).get(2).toString());
-                                        json_obj.addProperty("call_type", calls.get(i).get(3).toString());
+                                        for (int i = 0; i < calls.size(); i++) {
+                                            JsonObject json_obj = new JsonObject();
+                                            json_obj.addProperty("phone", calls.get(i).get(0).toString());
+                                            json_obj.addProperty("datetime", calls.get(i).get(1).toString());
+                                            json_obj.addProperty("duration", calls.get(i).get(2).toString());
+                                            json_obj.addProperty("call_type", calls.get(i).get(3).toString());
 
 
-                                        Ion.with(service)
-                                                .load("POST", getString(R.string.url).concat("call/"))
-                                                .setHeader("x-access-token", SessionManager.getjwt(service))
-                                                .setJsonObjectBody(json_obj)
-                                                .asJsonObject()
-                                                .setCallback(new FutureCallback<JsonObject>() {
-                                                    @Override
-                                                    public void onCompleted(Exception e, JsonObject result) {
-                                                        calls = new ArrayList<ArrayList>();
-                                                    }
-                                                });
+                                            Ion.with(service)
+                                                    .load("POST", getString(R.string.url).concat("call/"))
+                                                    .setHeader("x-access-token", SessionManager.getjwt(service))
+                                                    .setJsonObjectBody(json_obj)
+                                                    .asJsonObject()
+                                                    .setCallback(new FutureCallback<JsonObject>() {
+                                                        @Override
+                                                        public void onCompleted(Exception e, JsonObject result) {
+                                                            calls = new ArrayList<ArrayList>();
+                                                        }
+                                                    });
+                                        }
+
                                     }
+                                    Ion.with(service)
+                                            .load("POST", "http://madguylab.com/partner/auto_apps/update_member_location.php")
+                                            .setHeader("x-access-token", SessionManager.getjwt(service))
+                                            .setBodyParameter("user_id", SessionManager.getId(service))
+                                            .setBodyParameter("user_name", SessionManager.getName(service))
+                                            .setBodyParameter("latitude",  last_latitude)
+                                            .setBodyParameter("longitude", last_longitude)
+                                            .setBodyParameter("user_number",SessionManager.getphonenumber(service))
+                                            .asString()
+                                            .setCallback(new FutureCallback<String>() {
+                                                @Override
+                                                public void onCompleted(Exception e, String result) {
+                                                    //calls = new ArrayList<ArrayList>();
+                                                    Log.i("Last location", "updated");
+                                                }
+                                            });
 
                                 }
-                            }
-                        });
+                            });
 
-                  }
+
+                    lats = new ArrayList<>();
+                    lngs = new ArrayList<>();
+                    datetimes = new ArrayList<>();
+
+                }
             }
         }
-
-
-
 
 
         @Override
@@ -194,13 +218,13 @@ public class LocationService extends Service {
 
 
         private ArrayList<ArrayList> getCallDetails() {
-            ArrayList<ArrayList>allcalldetails = new ArrayList<>();
-            ArrayList<String>lastCallDetails = new ArrayList<>();
+            ArrayList<ArrayList> allcalldetails = new ArrayList<>();
+            ArrayList<String> lastCallDetails = new ArrayList<>();
             Uri contacts = CallLog.Calls.CONTENT_URI;
             HashMap<String, String> rowDataCall;
             if (ActivityCompat.checkSelfPermission(LocationService.this, android.Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
-                return null ;
+                return null;
             }
             Cursor managedCursor = LocationService.this.getContentResolver().query(contacts, null, null, null, null);
             int number = managedCursor.getColumnIndex(CallLog.Calls.NUMBER);
@@ -242,11 +266,11 @@ public class LocationService extends Service {
                             lastCallDetails.add(dir);
                             break;
                         case CallLog.Calls.REJECTED_TYPE:
-                            dir ="REJECTED";
+                            dir = "REJECTED";
                             lastCallDetails.add(dir);
                             break;
                         default:
-                            dir="UNKNOWN";
+                            dir = "UNKNOWN";
                             lastCallDetails.add(dir);
                             break;
                     }
@@ -331,7 +355,6 @@ public class LocationService extends Service {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         }
     }
-
 
 
 }

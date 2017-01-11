@@ -104,7 +104,7 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingAdapter.MyViewHo
                         .dontAnimate()
                         .diskCacheStrategy(DiskCacheStrategy.RESULT)
                         .into(holder.thumbnail);
-                Log.i("ML adapter", imageurl.get(position));
+               // Log.i("ML adapter", imageurl.get(position));
             }
             holder.item.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -142,7 +142,7 @@ public class ListingAdapter extends RecyclerView.Adapter<ListingAdapter.MyViewHo
                         .into(holder.thumbnail);
 
 
-                Log.i("ALL adapter", imageurl.get(position));
+                //Log.i("ALL adapter", imageurl.get(position));
             }
             holder.item.setOnClickListener(new View.OnClickListener() {
                 @Override

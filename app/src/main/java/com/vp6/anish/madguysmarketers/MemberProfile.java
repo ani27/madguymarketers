@@ -174,7 +174,7 @@ public class MemberProfile extends AppCompatActivity implements  ProfileCallLogs
 
 
         if (isNetworkAvailable()) {
-            Log.i("Error check", "Flag two");
+          //  Log.i("Error check", "Flag two");
             Ion.with(this)
                     .load("GET", getString(R.string.url).concat("call/" + id + "/"))
                     .setHeader("x-access-token", SessionManager.getjwt(MemberProfile.this))
@@ -185,7 +185,7 @@ public class MemberProfile extends AppCompatActivity implements  ProfileCallLogs
                             // do stuff with the result or error
                             try {
 
-                                Log.i("Error check", "Flag three");
+                                //Log.i("Error check", "Flag three");
                                 ArrayList<String> number = new ArrayList<String>();
                                 ArrayList<String> time = new ArrayList<String>();
                                 ArrayList<String> duration = new ArrayList<String>();
@@ -257,7 +257,7 @@ public class MemberProfile extends AppCompatActivity implements  ProfileCallLogs
                                                 tabLayout.setupWithViewPager(viewPager);
                                                 tabLayout.setTabTextColors(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
                                                 progressBar.setVisibility(View.GONE);
-                                                Log.i("Error check", "Flag four");
+                                               // Log.i("Error check", "Flag four");
                                             }
                                         });
 
@@ -305,11 +305,11 @@ public class MemberProfile extends AppCompatActivity implements  ProfileCallLogs
 
 
     private boolean isNetworkAvailable() {
-        Log.i("Error check", "Flag network one");
+       // Log.i("Error check", "Flag network one");
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        Log.i("Error check", "Flag network two");
+       // Log.i("Error check", "Flag network two");
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
