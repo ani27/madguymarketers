@@ -106,6 +106,9 @@ public class ListingActivity extends AppCompatActivity
         Intent intent = new Intent(this, LocationService.class);
         startService(intent);
 
+        myListingFragment = new MyListingFragment();
+        allListingFragment = new AllListingFragment();
+
     }
 
 
@@ -143,8 +146,12 @@ public class ListingActivity extends AppCompatActivity
     @Override
     public boolean onQueryTextChange(String query) {
         // Here is where we are going to implement the filter logic
-        return false;
+        Log.i("here", "query changed");
+        myListingFragment.filter_results(query);
+        allListingFragment.filter_results(query);
+        return true;
     }
+
 
     @Override
     public boolean onQueryTextSubmit(String query) {
@@ -157,9 +164,7 @@ public class ListingActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -176,9 +181,7 @@ public class ListingActivity extends AppCompatActivity
                 startActivity(intent);
             } else {
                 Toast.makeText(ListingActivity.this, "Connect to Internet and Try again", Toast.LENGTH_LONG).show();
-
             }
-
 
         } else if (id == R.id.nav_admin) {
             if (isNetworkAvailable()) {
@@ -216,10 +219,9 @@ public class ListingActivity extends AppCompatActivity
     @Override
     public void onResume() {
 
-
+        super.onResume();
         progressBar.setVisibility(View.VISIBLE);
-        myListingFragment = new MyListingFragment();
-        allListingFragment = new AllListingFragment();
+
         mData = new ArrayList<>();
         mData_name = new ArrayList<>();
         mData_type = new ArrayList<>();
@@ -280,7 +282,7 @@ public class ListingActivity extends AppCompatActivity
 
         updatedb();
 
-        super.onResume();
+
 
 
     }

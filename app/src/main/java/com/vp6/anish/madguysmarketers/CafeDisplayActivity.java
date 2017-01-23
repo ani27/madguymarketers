@@ -35,8 +35,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.Response;
+
+import net.gotev.uploadservice.MultipartUploadRequest;
+import net.gotev.uploadservice.UploadNotificationConfig;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 
 public class CafeDisplayActivity extends AppCompatActivity {
@@ -46,7 +52,7 @@ public class CafeDisplayActivity extends AppCompatActivity {
     int CafePhotos = 201;
     int AgreementPhotos = 202;
     int OwnerPhoto = 205;
-    ArrayList<String>photoaddress;
+    ArrayList<String> photoaddress;
     ArrayList<String> cafephotoaddress;
     ArrayList<String> agreementphotoaddress;
     ArrayList<Boolean> cafephotoupload;
@@ -78,6 +84,7 @@ public class CafeDisplayActivity extends AppCompatActivity {
     Toolbar toolBar;
     CollapsingToolbarLayout collapsingToolbarLayout;
     RelativeLayout relativeLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,171 +100,157 @@ public class CafeDisplayActivity extends AppCompatActivity {
         agreementphotoaddress = new ArrayList<>();
         cafephotoupload = new ArrayList<>();
         agreementphotoupload = new ArrayList<>();
-        cafe_photos = (RecyclerView)findViewById(R.id.cafe_photo_recyclerview);
-        agreement_photos= (RecyclerView)findViewById(R.id.partnership_agreement_photo_recyclerview);
+        cafe_photos = (RecyclerView) findViewById(R.id.cafe_photo_recyclerview);
+        agreement_photos = (RecyclerView) findViewById(R.id.partnership_agreement_photo_recyclerview);
 
-        cafename= (TextView)findViewById(R.id.cafe_name_display);
-        ownername  = (TextView)findViewById(R.id.owner_name_display);
-        phone_number  = (TextView)findViewById(R.id.phone_number_display);
-        pincode = (TextView)findViewById(R.id.pincode_display);
-        city  = (TextView)findViewById(R.id.city_diplay);
-        city_above  = (TextView)findViewById(R.id.city_display);
-        state  = (TextView)findViewById(R.id.state_display);
-        hardware  = (TextView)findViewById(R.id.hardware_display);
-        cafestatus  = (TextView)findViewById(R.id.cafestatus_display);
-        address = (TextView)findViewById(R.id.address_display);
-        number_of_agreement_photos = (TextView)findViewById(R.id.partnership_agreement_photo_number);
-        number_of_cafe_photos = (TextView)findViewById(R.id.cafe_photo_number);
-        ownerphoto = (ImageView)findViewById(R.id.owner_photo2);
-        cafephoto = (ImageView)findViewById(R.id.cafe_image);
-        progressBar = (ProgressBar)findViewById(R.id.progressBar_display_cafe);
-        relativeLayout = (RelativeLayout)findViewById(R.id.display_cafe);
-
-
-
-       try{
-        if(!getIntent().getExtras().getString("id").isEmpty()){
-            id = getIntent().getExtras().getString("id").trim();
-            progressBar.setVisibility(View.VISIBLE);
-           // relativeLayout.setVisibility(View.INVISIBLE);
+        cafename = (TextView) findViewById(R.id.cafe_name_display);
+        ownername = (TextView) findViewById(R.id.owner_name_display);
+        phone_number = (TextView) findViewById(R.id.phone_number_display);
+        pincode = (TextView) findViewById(R.id.pincode_display);
+        city = (TextView) findViewById(R.id.city_diplay);
+        city_above = (TextView) findViewById(R.id.city_display);
+        state = (TextView) findViewById(R.id.state_display);
+        hardware = (TextView) findViewById(R.id.hardware_display);
+        cafestatus = (TextView) findViewById(R.id.cafestatus_display);
+        address = (TextView) findViewById(R.id.address_display);
+        number_of_agreement_photos = (TextView) findViewById(R.id.partnership_agreement_photo_number);
+        number_of_cafe_photos = (TextView) findViewById(R.id.cafe_photo_number);
+        ownerphoto = (ImageView) findViewById(R.id.owner_photo2);
+        cafephoto = (ImageView) findViewById(R.id.cafe_image);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar_display_cafe);
+        relativeLayout = (RelativeLayout) findViewById(R.id.display_cafe);
 
 
-
-            JsonObject json = new JsonObject();
-            json.addProperty("token", SessionManager.getjwt(CafeDisplayActivity.this));
-            Ion.with(this)
-                    .load("GET", getString(R.string.url).concat("cafe/"+id+"/"))
-                    .setHeader("x-access-token",SessionManager.getjwt(CafeDisplayActivity.this))
-                    .setJsonObjectBody(json)
-                    .asJsonObject()
-                    .setCallback(new FutureCallback<JsonObject>() {
-                        @Override
-                        public void onCompleted(Exception e, JsonObject result) {
-                            // do stuff with the result or error
-                            try {
-                                String name = result.get("name").getAsString();
-                                String owner = result.get("owner").getAsString();
-                                String owner_photo=result.get("owner_photo").getAsString();
-                                JsonArray cafe_photo = result.get("photos").getAsJsonArray();
-                                String state_ = result.get("state").getAsString();
-                                String city_ = result.get("city").getAsString();
-                                String address_ = result.get("address").getAsString();
-                                Number pincode_ = result.get("pin_code").getAsNumber();
-                                String phone = result.get("phone").getAsString();
-                                String lat_ = result.get("lat").getAsString();
-                                String lng_ = result.get("lng").getAsString();
-                                String cafe_status= result.get("cafe_status").getAsString();
-                                String hardware_given = result.get("hardware_given").getAsString();
-                                JsonArray agreement_photo = result.get("agreement_photos").getAsJsonArray();
+        try {
+            if (!getIntent().getExtras().getString("id").isEmpty()) {
+                id = getIntent().getExtras().getString("id").trim();
+                progressBar.setVisibility(View.VISIBLE);
+                // relativeLayout.setVisibility(View.INVISIBLE);
 
 
-                                cafename.setText(name);
-                                if(!owner.equals(""))
-                                ownername.setText(owner);
-                                if(!state_.equals(""))
-                                state.setText(state_);
-                                if(!city_.equals("")) {
-                                    city.setText(city_);
-                                    city_above.setText(city_);
-                                }
-                                if(!pincode_.toString().equals(""))
-                                    pincode.setText(pincode_.toString());
-                                if (!address_.equals(""))
-                                address.setText(address_);
-                                if (!phone.equals(""))
-                                phone_number.setText(phone);
-                                if (!hardware_given.equals(""))
-                                hardware.setText(hardware_given);
-                                if (!cafe_status.equals(""))
-                                cafestatus.setText(cafe_status);
-                                lat =(lat_);
-                                lng =(lng_);
+                JsonObject json = new JsonObject();
+                json.addProperty("token", SessionManager.getjwt(CafeDisplayActivity.this));
+                Ion.with(this)
+                        .load("GET", getString(R.string.url).concat("cafe/" + id + "/"))
+                        .setHeader("x-access-token", SessionManager.getjwt(CafeDisplayActivity.this))
+                        .setJsonObjectBody(json)
+                        .asJsonObject()
+                        .setCallback(new FutureCallback<JsonObject>() {
+                            @Override
+                            public void onCompleted(Exception e, JsonObject result) {
+                                // do stuff with the result or error
+                                try {
+                                    String name = result.get("name").getAsString();
+                                    String owner = result.get("owner").getAsString();
+                                    String owner_photo = result.get("owner_photo").getAsString();
+                                    JsonArray cafe_photo = result.get("photos").getAsJsonArray();
+                                    String state_ = result.get("state").getAsString();
+                                    String city_ = result.get("city").getAsString();
+                                    String address_ = result.get("address").getAsString();
+                                    Number pincode_ = result.get("pin_code").getAsNumber();
+                                    String phone = result.get("phone").getAsString();
+                                    String lat_ = result.get("lat").getAsString();
+                                    String lng_ = result.get("lng").getAsString();
+                                    String cafe_status = result.get("cafe_status").getAsString();
+                                    String hardware_given = result.get("hardware_given").getAsString();
+                                    JsonArray agreement_photo = result.get("agreement_photos").getAsJsonArray();
 
 
-                                relativeLayout.setVisibility(View.VISIBLE);
-
-                                progressBar.setVisibility(View.GONE);
-                                for(int i = 0;  i<cafe_photo.size(); i++)
-                                {
-                                    cafephotoaddress.add(getString(R.string.media_url).concat(cafe_photo.get(i).getAsString()));
-                                    cafephotoupload.add(true);
-                                    Log.i("photos","added");
-                                }
-                                for(int i = 0;  i<agreement_photo.size(); i++)
-                                {
-                                    agreementphotoaddress.add(getString(R.string.media_url).concat(agreement_photo.get(i).getAsString()));
-                                    agreementphotoupload.add(true);
-                                }
-                                if(!owner_photo.equals("")){
-                                    owner_photo_url = getString(R.string.media_url).concat(owner_photo);
-                                    Glide.with(CafeDisplayActivity.this).load(owner_photo_url)
-                                            .thumbnail(0.5f)
-                                            .crossFade()
-                                            .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                                            .into(ownerphoto);
-
-                                }
+                                    cafename.setText(name);
+                                    if (!owner.equals(""))
+                                        ownername.setText(owner);
+                                    if (!state_.equals(""))
+                                        state.setText(state_);
+                                    if (!city_.equals("")) {
+                                        city.setText(city_);
+                                        city_above.setText(city_);
+                                    }
+                                    if (!pincode_.toString().equals(""))
+                                        pincode.setText(pincode_.toString());
+                                    if (!address_.equals(""))
+                                        address.setText(address_);
+                                    if (!phone.equals(""))
+                                        phone_number.setText(phone);
+                                    if (!hardware_given.equals(""))
+                                        hardware.setText(hardware_given);
+                                    if (!cafe_status.equals(""))
+                                        cafestatus.setText(cafe_status);
+                                    lat = (lat_);
+                                    lng = (lng_);
 
 
-                                if(cafephotoaddress.size() > 0)
-                                {
-                                    horizontalAdapter = new HorizontalAdapter(CafeDisplayActivity.this, cafephotoaddress, "cafe", cafephotoupload);
-                                    LinearLayoutManager horizontalLayoutManagaer
-                                            = new LinearLayoutManager(CafeDisplayActivity.this, LinearLayoutManager.HORIZONTAL, false);
-                                    cafe_photos.setLayoutManager(horizontalLayoutManagaer);
-                                    cafe_photos.setAdapter(horizontalAdapter);
-                                    cafe_photos.setVisibility(View.VISIBLE);
-                                    number_of_cafe_photos.setText(cafephotoaddress.size() + " photos added");
+                                    relativeLayout.setVisibility(View.VISIBLE);
 
-                                    Glide.with(CafeDisplayActivity.this).load(cafephotoaddress.get(0))
-                                            .thumbnail(0.5f)
-                                            .crossFade()
-                                            .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                                            .into(cafephoto);
+                                    progressBar.setVisibility(View.GONE);
+                                    for (int i = 0; i < cafe_photo.size(); i++) {
+                                        cafephotoaddress.add(getString(R.string.media_url).concat(cafe_photo.get(i).getAsString()));
+                                        cafephotoupload.add(true);
+                                        Log.i("photos", "added");
+                                    }
+                                    for (int i = 0; i < agreement_photo.size(); i++) {
+                                        agreementphotoaddress.add(getString(R.string.media_url).concat(agreement_photo.get(i).getAsString()));
+                                        agreementphotoupload.add(true);
+                                    }
+                                    if (!owner_photo.equals("")) {
+                                        owner_photo_url = getString(R.string.media_url).concat(owner_photo);
+                                        Glide.with(CafeDisplayActivity.this).load(owner_photo_url)
+                                                .thumbnail(0.5f)
+                                                .crossFade()
+                                                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                                                .into(ownerphoto);
+
+                                    }
 
 
-                                }
-                                else
-                                {
-                                    number_of_cafe_photos.setText( "0 cafe photos added");
+                                    if (cafephotoaddress.size() > 0) {
+                                        horizontalAdapter = new HorizontalAdapter(CafeDisplayActivity.this, cafephotoaddress, "cafe", cafephotoupload);
+                                        LinearLayoutManager horizontalLayoutManagaer
+                                                = new LinearLayoutManager(CafeDisplayActivity.this, LinearLayoutManager.HORIZONTAL, false);
+                                        cafe_photos.setLayoutManager(horizontalLayoutManagaer);
+                                        cafe_photos.setAdapter(horizontalAdapter);
+                                        cafe_photos.setVisibility(View.VISIBLE);
+                                        number_of_cafe_photos.setText(cafephotoaddress.size() + " photos added");
 
-                                }
+                                        Glide.with(CafeDisplayActivity.this).load(cafephotoaddress.get(0))
+                                                .thumbnail(0.5f)
+                                                .crossFade()
+                                                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                                                .into(cafephoto);
 
-                                if(agreementphotoaddress.size() > 0)
-                                {
-                                    horizontalAdapter = new HorizontalAdapter(CafeDisplayActivity.this, agreementphotoaddress, "agreement", agreementphotoupload);
-                                    LinearLayoutManager horizontalLayoutManagaer
-                                            = new LinearLayoutManager(CafeDisplayActivity.this, LinearLayoutManager.HORIZONTAL, false);
-                                    agreement_photos.setLayoutManager(horizontalLayoutManagaer);
-                                    agreement_photos.setAdapter(horizontalAdapter);
-                                    agreement_photos.setVisibility(View.VISIBLE);
-                                    number_of_agreement_photos.setText(agreementphotoaddress.size() + " photos added");
 
-                                }
-                                else
-                                {
-                                    number_of_agreement_photos.setText("0 agreement photos added");
+                                    } else {
+                                        number_of_cafe_photos.setText("0 cafe photos added");
+
+                                    }
+
+                                    if (agreementphotoaddress.size() > 0) {
+                                        horizontalAdapter = new HorizontalAdapter(CafeDisplayActivity.this, agreementphotoaddress, "agreement", agreementphotoupload);
+                                        LinearLayoutManager horizontalLayoutManagaer
+                                                = new LinearLayoutManager(CafeDisplayActivity.this, LinearLayoutManager.HORIZONTAL, false);
+                                        agreement_photos.setLayoutManager(horizontalLayoutManagaer);
+                                        agreement_photos.setAdapter(horizontalAdapter);
+                                        agreement_photos.setVisibility(View.VISIBLE);
+                                        number_of_agreement_photos.setText(agreementphotoaddress.size() + " photos added");
+
+                                    } else {
+                                        number_of_agreement_photos.setText("0 agreement photos added");
+
+                                    }
+                                } catch (NullPointerException e1) {
+
+                                    Toast.makeText(CafeDisplayActivity.this, "Failed, Try again later", Toast.LENGTH_LONG).show();
+                                    progressBar.setVisibility(View.GONE);
+                                    Log.i("EXCEPTION", e1.getMessage());
 
                                 }
-                            }
-                            catch (NullPointerException e1)
-                            {
-
-                                Toast.makeText(CafeDisplayActivity.this,"Failed, Try again later", Toast.LENGTH_LONG).show();
-                                progressBar.setVisibility(View.GONE);
-                                Log.i("EXCEPTION",e1.getMessage());
 
                             }
+                        });
 
-                        }
-                    });
-
+            }
+        } catch (NullPointerException e1) {
+            Log.i("Null Exception id", e1.getMessage());
         }
-       }
-       catch (NullPointerException e1)
-       {
-           Log.i("Null Exception id",e1.getMessage());
-       }
 
     }
 
@@ -292,15 +285,15 @@ public class CafeDisplayActivity extends AppCompatActivity {
                 dialogInterface.dismiss();
                 dialogInterface.cancel();
 
-                if(Build.VERSION.SDK_INT >= 23) {
+                if (Build.VERSION.SDK_INT >= 23) {
                     getPermissionToReadExternalStorage();
                 }
-                    if (ContextCompat.checkSelfPermission(CafeDisplayActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(CafeDisplayActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
 
-                        Intent intent = new Intent(CafeDisplayActivity.this, GalleryActivity.class);
-                        intent.putExtra("number","10");
-                        startActivityForResult(intent, j);
-                    }
+                    Intent intent = new Intent(CafeDisplayActivity.this, GalleryActivity.class);
+                    intent.putExtra("number", "10");
+                    startActivityForResult(intent, j);
+                }
 
 
             }
@@ -321,9 +314,9 @@ public class CafeDisplayActivity extends AppCompatActivity {
     }
 
 
-    public void editcafe(View v){
+    public void editcafe(View v) {
         Intent intent = new Intent(CafeDisplayActivity.this, EditCafeActivity.class);
-        intent.putExtra("cafename",cafename.getText().toString().trim());
+        intent.putExtra("cafename", cafename.getText().toString().trim());
         intent.putExtra("ownername", ownername.getText().toString().trim());
         intent.putExtra("phonenumber", phone_number.getText().toString().trim());
         intent.putExtra("pincode", pincode.getText().toString().trim());
@@ -332,10 +325,10 @@ public class CafeDisplayActivity extends AppCompatActivity {
         intent.putExtra("lat", lat);
         intent.putExtra("lng", lng);
         intent.putExtra("hardware", hardware.getText().toString().trim());
-        intent.putExtra("address",address.getText().toString().trim());
+        intent.putExtra("address", address.getText().toString().trim());
         int cafe_status = status(cafestatus.getText().toString().trim());
-        intent.putExtra("cafestatus",cafe_status);
-        intent.putExtra("id",id);
+        intent.putExtra("cafestatus", cafe_status);
+        intent.putExtra("id", id);
 
         startActivity(intent);
         finish();
@@ -415,6 +408,25 @@ public class CafeDisplayActivity extends AppCompatActivity {
                                     //Log.i("Cafe Photo", (k + j) + "");
                                 }
                             });
+//
+//                    try {
+//                        new MultipartUploadRequest(this, getString(R.string.url).concat("photo/"))
+//                                .setMethod("POST")
+//                                .addHeader("x-access-token", SessionManager.getjwt(CafeDisplayActivity.this))
+//                                .addFileToUpload(photoaddress.get(i), "image") //Adding file
+//                                .addParameter("type", "cafe")
+//                                .addParameter("photo_type", "photos")
+//                                .addParameter("_id", id)
+//                                .setNotificationConfig()
+//                                .setMaxRetries(2)
+//                                .startUpload();
+//                    } catch (MalformedURLException e) {
+//                        e.printStackTrace();
+//                    } catch (FileNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
+//
+
                 }
             } else if (requestCode == AgreementPhotos) {
                 photoaddress = new ArrayList<>();
@@ -481,36 +493,33 @@ public class CafeDisplayActivity extends AppCompatActivity {
             }
 
 
-
         }
     }
 
     public void viewonmap(View view) {
 
-        if(!lat.equals("") && !lng.equals("")){
-        if (Build.VERSION.SDK_INT >= 23) {
-            getPermissionToAccessFineLocation();
-        }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            boolean gps = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            if (gps) {
-                Intent intent = new Intent(CafeDisplayActivity.this, LocationDisplayActivity.class);
-                intent.putExtra("lat", lat);
-                intent.putExtra("lng", lng);
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, "Turn on the GPS first", Toast.LENGTH_LONG).show();
+        if (!lat.equals("") && !lng.equals("")) {
+            if (Build.VERSION.SDK_INT >= 23) {
+                getPermissionToAccessFineLocation();
             }
-        }}
-        else
-        {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                boolean gps = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                if (gps) {
+                    Intent intent = new Intent(CafeDisplayActivity.this, LocationDisplayActivity.class);
+                    intent.putExtra("lat", lat);
+                    intent.putExtra("lng", lng);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "Turn on the GPS first", Toast.LENGTH_LONG).show();
+                }
+            }
+        } else {
 
             Toast.makeText(this, "Location not marked. Mark it by editing", Toast.LENGTH_LONG).show();
 
         }
     }
-
 
 
     private static final int ACCESS_FINE_LOCATION = 2;
@@ -588,8 +597,7 @@ public class CafeDisplayActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Access Location permission denied. It is required to get your exact location", Toast.LENGTH_SHORT).show();
             }
-        }
-        else if (requestCode == READ_EXTERNAL_STORAGE) {
+        } else if (requestCode == READ_EXTERNAL_STORAGE) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Read External Storage Permission granted", Toast.LENGTH_SHORT).show();
 
@@ -600,37 +608,28 @@ public class CafeDisplayActivity extends AppCompatActivity {
         }
 
 
-
     }
 
 
-    public void lastphoto(String type)
-    {
-        if(type.equals("cafe"))
-        {
+    public void lastphoto(String type) {
+        if (type.equals("cafe")) {
             cafe_photos.setVisibility(View.GONE);
-        }
-        else if(type.equals("agreement"))
-        {
+        } else if (type.equals("agreement")) {
             agreement_photos.setVisibility(View.GONE);
         }
     }
 
-    public void numberofphotochanged(String type, int number)
-    {
-        if(type.equals("cafe"))
-        {
-            number_of_cafe_photos.setText(number +" photos added");
-        }
-        else if(type.equals("agreement"))
-        {
-            number_of_agreement_photos.setText(number +" photos added");
+    public void numberofphotochanged(String type, int number) {
+        if (type.equals("cafe")) {
+            number_of_cafe_photos.setText(number + " photos added");
+        } else if (type.equals("agreement")) {
+            number_of_agreement_photos.setText(number + " photos added");
         }
     }
 
     public void ownerphoto(View view) {
         Intent intent = new Intent(CafeDisplayActivity.this, GalleryActivity.class);
-        intent.putExtra("number","1");
+        intent.putExtra("number", "1");
         startActivityForResult(intent, OwnerPhoto);
     }
 
@@ -639,12 +638,11 @@ public class CafeDisplayActivity extends AppCompatActivity {
             Intent intent = new Intent(CafeDisplayActivity.this, MeetingActivity.class);
             intent.putExtra("id", id);
             startActivity(intent);
-        }
-        else {
+        } else {
             Toast.makeText(CafeDisplayActivity.this, "Connect to Internet and Try again", Toast.LENGTH_LONG).show();
         }
 
-        }
+    }
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager

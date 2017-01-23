@@ -46,6 +46,7 @@ public class AllListingFragment extends Fragment {
     public ArrayList<String> mData_lat;
     public ArrayList<String> mData_lng;
     public ArrayList<String> mData_imageurl;
+    public ArrayList<ListItem>allData;
     private FloatingActionButton fab_map_all;
 
     public OnFragmentInteractionListener mListener;
@@ -101,6 +102,7 @@ public class AllListingFragment extends Fragment {
         mData_address = new ArrayList<>();
         mData_phone_number = new ArrayList<>();
         mData_status = new ArrayList<>();
+        allData = new ArrayList<>();
 
         View v =  inflater.inflate(R.layout.fragment_all_listing, container, false);
         if(mListener != null) {
@@ -117,6 +119,11 @@ public class AllListingFragment extends Fragment {
                     mData_lat = mData.get(7);
                     mData_lng = mData.get(8);
 
+//                    for(int i=0; i<mData_id.size(); i++){
+//                        ListItem item = new ListItem();
+//                        item.setData(mData_name.get(i),mData_type.get(i),mData_id.get(i),mData_imageurl.get(i),mData_lat.get(i),mData_lng.get(i),mData_address.get(i),mData_phone_number.get(i),mData_status.get(i));
+//                        allData.add(item);
+//                    }
                 }
             }
         }
@@ -137,11 +144,8 @@ public class AllListingFragment extends Fragment {
             }
         });
         recyclerView = (RecyclerView) v.findViewById(R.id.listView2);
-        listingAdapter = new ListingAdapter(mcontext,mData_imageurl,mData_name,mData_type,mData_id,mData_phone_number,mData_status,mData_address, AllListingFragment.this);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager( mcontext);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(listingAdapter);
+       // listingAdapter = new ListingAdapter(mcontext,mData_imageurl,mData_name,mData_type,mData_id,mData_phone_number,mData_status,mData_address, AllListingFragment.this);
+
 
         return v;
     }
@@ -187,6 +191,11 @@ public class AllListingFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
+    public void filter_results(String Query){
+        listingAdapter.getFilter().filter(Query);
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -214,9 +223,22 @@ public class AllListingFragment extends Fragment {
                     mData_phone_number = mData.get(6);
                     mData_lat = mData.get(7);
                     mData_lng = mData.get(8);
+
+                    for(int i=0; i<mData_id.size(); i++){
+                        ListItem item = new ListItem();
+                        item.setData(mData_name.get(i),mData_type.get(i),mData_id.get(i),mData_imageurl.get(i),mData_lat.get(i),mData_lng.get(i),mData_address.get(i),mData_phone_number.get(i),mData_status.get(i));
+                        allData.add(item);
+                    }
                 }
             }
         }
+
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager( mcontext);
+        recyclerView.setLayoutManager(mLayoutManager);
+        listingAdapter = new ListingAdapter(mcontext,AllListingFragment.this,allData, recyclerView);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(listingAdapter);
+
     }
 
     /**

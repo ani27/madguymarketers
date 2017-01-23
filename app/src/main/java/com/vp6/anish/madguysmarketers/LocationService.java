@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -45,11 +46,14 @@ public class LocationService extends Service {
         ArrayList<ArrayList> calls = new ArrayList<>();
         NotificationCompat.Builder builder;
         NotificationManager manager;
+        SQLiteDatabase database;
 
         public LocationListener(String provider, Service service) {
             Log.e(TAG, "LocationListener " + provider);
             mLastLocation = new Location(provider);
             this.service = service;
+
+
         }
 
         @Override
@@ -57,6 +61,7 @@ public class LocationService extends Service {
             Log.e(TAG, "onLocationChanged: " + loc);
             mLastLocation.set(loc);
 
+            database = DatabaseHandler.getInstance(service);
             Log.i("*****", "Location changed");
 
 
@@ -150,6 +155,65 @@ public class LocationService extends Service {
                                                 public void onCompleted(Exception e, String result) {
                                                     //calls = new ArrayList<ArrayList>();
                                                     Log.i("Last location", "updated");
+
+                                                    int unique_int = 0;
+                                                    double d = 0.2;
+                                                    double R_earth = 6371;
+                                                    double r = (d / R_earth);
+                                                    double lat_min;// = Double.parseDouble(last_latitude) - r;
+                                                    double lat_max;// = Double.parseDouble(last_latitude) + r;
+                                                    double lng_delta = Math.asin(Math.sin(r) / Math.cos(Double.parseDouble(last_latitude)));
+                                                    // double lng_delta = r;
+                                                    double lng_min;// =  - lng_delta;
+                                                    double lng_max;/// = lng + lng_delta;
+
+
+                                                    lat_min = Double.parseDouble(last_latitude) - 0.009 * d;
+                                                    lat_max = Double.parseDouble(last_latitude) + 0.009 * d;
+                                                    lng_min = Double.parseDouble(last_longitude) - (0.009 * d / Math.cos(Double.parseDouble(last_latitude) * deg2rad(Math.PI / 180)));
+                                                    lng_max = Double.parseDouble(last_longitude) + (0.009 * d / Math.cos(Double.parseDouble(last_latitude) * deg2rad(Math.PI / 180)));
+
+                                                    if (lat_min > lat_max) {
+                                                        double temp = lat_max;
+                                                        lat_max = lat_min;
+                                                        lat_min = temp;
+                                                    }
+
+                                                    if (lng_min > lng_max) {
+                                                        double temp = lng_max;
+                                                        lng_max = lng_min;
+                                                        lng_min = temp;
+                                                    }
+
+                                                    Log.i("Latitude min", lat_min + "");
+                                                    Log.i("Latitude max", lat_max + "");
+                                                    Log.i("Longitude max", lng_max + "");
+                                                    Log.i("Longitude min", lng_min + "");
+
+                                                    Cursor cursor_all = database.rawQuery("Select * from allisting where (lat <= "+ lat_max +" and lat >= "+ lat_min +") and (lng <= "+ lng_max +" and lng >= "+lng_min+") ", null);
+                                                    while(cursor_all.moveToNext()){
+
+                                                        Log.i("Inside curseor","Location");
+                                                        String id =  (cursor_all.getString(0));
+                                                        String name = (cursor_all.getString(1));
+                                                        String type = (cursor_all.getString(2));
+                                                        NotificationCompat.Builder builder;
+                                                        NotificationManager manager;
+                                                        builder = new NotificationCompat.Builder(service)
+                                                                .setSmallIcon(R.mipmap.ic_launcher)
+                                                                .setContentTitle("MadGuys Marketers")
+                                                                .setContentText("You are at "+name+" .Tap to add meeting");
+
+                                                        Intent gpsOptionsIntent = new Intent(service, MeetingActivity.class );
+                                                        gpsOptionsIntent.putExtra("id", id);
+                                                        PendingIntent contentIntent = PendingIntent.getActivity(service, unique_int, gpsOptionsIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                                        builder.setContentIntent(contentIntent);
+                                                        builder.setOngoing(false);
+                                                        manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                                        manager.notify(unique_int, builder.build());
+                                                        unique_int++;
+                                                    }
+
                                                 }
                                             });
 
@@ -356,5 +420,8 @@ public class LocationService extends Service {
         }
     }
 
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
 
 }
