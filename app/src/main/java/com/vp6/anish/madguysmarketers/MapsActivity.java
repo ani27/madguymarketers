@@ -98,17 +98,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.getMaxZoomLevel();
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(current_location));
                 Log.i("MAP","inside map");
-                mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                    @Override
-                    public void onMapClick(LatLng latLng) {
-                        mMap.clear();
-                        mMap.addMarker(new MarkerOptions().position(latLng).title("Location"));
-                        markedlocation=latLng;
-                        Log.i("MAP","inside on click listner");
-                    }
-                });
 
             }
+
+            mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                @Override
+                public void onMapClick(LatLng latLng) {
+                    mMap.clear();
+                    mMap.addMarker(new MarkerOptions().position(latLng).title("Location"));
+                    markedlocation=latLng;
+                    Log.i("MAP","inside on click listner");
+                }
+            });
 
 
         }

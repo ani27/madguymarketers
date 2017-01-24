@@ -300,9 +300,14 @@ public class EditCafeActivity extends AppCompatActivity {
                         }
 
                         result = sb.toString();
+                        Log.i("Here", "Geocoding");
+                        address.getText().clear();
                         address.setText(result);
+                        city.getText().clear();
                         city.setText(address1.getLocality());
+                        state.getText().clear();
                         state.setText(address1.getAdminArea());
+                        pincode.getText().clear();
                         pincode.setText(address1.getPostalCode());
 
 

@@ -154,6 +154,7 @@ public class EditCoachingActivity extends AppCompatActivity {
                 }
                 catch (NullPointerException e){
 
+                    Log.i("Catch", "NullPointerException");
                 }
                 // Toast.makeText(this, latitude + " " + longitude, Toast.LENGTH_SHORT).show();
                 if (!latitude.equals("0") && !longitude.equals("0")) {
@@ -310,9 +311,13 @@ public class EditCoachingActivity extends AppCompatActivity {
                         }
 
                         result = sb.toString();
+                        address.getText().clear();
                         address.setText(result);
+                        city.getText().clear();
                         city.setText(address1.getLocality());
+                        state.getText().clear();
                         state.setText(address1.getAdminArea());
+                        pincode.getText().clear();
                         pincode.setText(address1.getPostalCode());
 
 
