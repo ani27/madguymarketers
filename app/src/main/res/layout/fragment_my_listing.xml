@@ -102,4 +102,16 @@
         android:textStyle="bold"
         android:layout_gravity="right|bottom" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_sort_my"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left"
+        app:elevation="6dp"
+        app:backgroundTint="@color/colorPrimary"
+        app:pressedTranslationZ="12dp"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/sorting" />
+
+
 </FrameLayout>

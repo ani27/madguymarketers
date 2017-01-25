@@ -1,6 +1,8 @@
 package com.vp6.anish.madguysmarketers;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,12 +55,17 @@ public class MyListingFragment extends Fragment implements View.OnClickListener 
     public ArrayList<String> mData_lng;
     public ArrayList<String> mData_imageurl;
     public ArrayList<ListItem> allData;
-
+    private FloatingActionButton fab_sort_all;
 
     public OnFragmentInteractionListener mListener;
     RecyclerView recyclerView;
     ListingAdapter listingAdapter;
     Context mcontext;
+    String searched="";
+    String typeofsort;
+    String typeoforder;
+
+
 
     public MyListingFragment() {
         // Required empty public constructor
@@ -151,6 +159,99 @@ public class MyListingFragment extends Fragment implements View.OnClickListener 
 
         //// getPermissionToReadCallLogs();
 
+        fab_sort_all = (FloatingActionButton)v.findViewById(R.id.fab_sort_my);
+        fab_sort_all.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Choose sorting type");
+
+                final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mcontext, android.R.layout.select_dialog_item);
+                arrayAdapter.add("Name");
+                arrayAdapter.add("Type");
+                arrayAdapter.add("Status");
+
+                builder.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        typeofsort = arrayAdapter.getItem(i);
+                        final int j = type(typeofsort);
+                        dialogInterface.dismiss();
+                        dialogInterface.cancel();
+
+                        final AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+                        builder.setTitle("Choose order");
+
+                        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mcontext, android.R.layout.select_dialog_item);
+                        arrayAdapter.add("Ascending");
+                        arrayAdapter.add("Descending");
+
+                        builder1.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                typeoforder = arrayAdapter.getItem(i);
+                                int k = type(typeoforder);
+                                if( j == 201){
+                                    if(k == 301){
+                                        listingAdapter.sortlistnameasc();
+                                        filter_results(searched);
+                                    }else if( k == 302){
+                                        listingAdapter.sortlistnamedes();
+                                        filter_results(searched);
+                                    }else{
+                                        dialogInterface.dismiss();
+                                        dialogInterface.cancel();
+                                    }
+                                }else if(j == 202){
+                                    if(k == 301){
+                                        listingAdapter.sortlisttypeasc();
+                                        filter_results(searched);
+                                    }else if( k == 302){
+                                        listingAdapter.sortlisttypedes();
+                                        filter_results(searched);
+                                    }else{
+                                        dialogInterface.dismiss();
+                                        dialogInterface.cancel();
+                                    }
+                                }else if(j == 203){
+                                    if(k == 301){
+                                        listingAdapter.sortliststatusasc();
+                                        filter_results(searched);
+                                    }else if( k == 302){
+                                        listingAdapter.sortliststatusdes();
+                                        filter_results(searched);
+                                    }else{
+                                        dialogInterface.dismiss();
+                                        dialogInterface.cancel();
+                                    }
+                                }else{
+                                    dialogInterface.dismiss();
+                                    dialogInterface.cancel();
+                                }
+                                dialogInterface.dismiss();
+                                dialogInterface.cancel();
+                            }
+                        });
+                        builder1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        builder1.show();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+            }
+        });
+
         return v;
     }
 
@@ -179,7 +280,26 @@ public class MyListingFragment extends Fragment implements View.OnClickListener 
     }
 
     public void filter_results(String Query){
+        searched = Query;
         listingAdapter.getFilter().filter(Query);
+    }
+
+    public int type(String str) {
+        switch (str) {
+            case "Name":
+                return 201;
+            case "Type":
+                return 202;
+            case "Status":
+                return 203;
+            case "Ascending":
+                return 301;
+            case "Descending":
+                return 302;
+            default:
+                return 0;
+
+        }
     }
 
 
@@ -325,14 +445,6 @@ public class MyListingFragment extends Fragment implements View.OnClickListener 
         ArrayList<ArrayList> getData();
     }
 
-    public void mylisting_map() {
-        Intent intent = new Intent(mcontext, LocationDisplayActivity.class);
-        intent.putStringArrayListExtra("lat_list", mData_lat);
-        intent.putStringArrayListExtra("lng_list", mData_lng);
-        intent.putStringArrayListExtra("status_list", mData_status);
-        startActivity(intent);
-
-    }
 
 
 }

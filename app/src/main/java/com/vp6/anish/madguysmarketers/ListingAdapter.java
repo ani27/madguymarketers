@@ -22,6 +22,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -105,7 +107,7 @@ public class ListingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             notifyDataSetChanged();
                             setLoaded();
                         }
-                    }, 3000);
+                    },1000);
                     isLoading = true;
                 }
             }
@@ -166,7 +168,7 @@ public class ListingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             notifyDataSetChanged();
                             setLoaded();
                         }
-                    }, 3000);
+                    }, 1000);
                     isLoading = true;
                 }
             }
@@ -348,4 +350,74 @@ public class ListingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     };
 
+    public void sortlistnameasc(){
+
+        Collections.sort(allData, new Comparator<ListItem>() {
+            @Override
+            public int compare(ListItem o1, ListItem o2) {
+                return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+            }
+        });
+        Log.i("inside compare", "check");
+
+    }
+
+    public void sortlistnamedes(){
+
+        Collections.sort(allData, new Comparator<ListItem>() {
+            @Override
+            public int compare(ListItem o1, ListItem o2) {
+                return o2.name.toLowerCase().compareTo(o1.name.toLowerCase());
+            }
+        });
+        Log.i("inside compare", "check");
+
+    }
+
+    public void sortlisttypeasc(){
+
+        Collections.sort(allData, new Comparator<ListItem>() {
+            @Override
+            public int compare(ListItem o1, ListItem o2) {
+                return o1.type.toLowerCase().compareTo(o2.type.toLowerCase());
+            }
+        });
+        Log.i("inside compare", "check");
+
+    }
+
+    public void sortlisttypedes(){
+
+        Collections.sort(allData, new Comparator<ListItem>() {
+            @Override
+            public int compare(ListItem o1, ListItem o2) {
+                return o2.type.toLowerCase().compareTo(o1.type.toLowerCase());
+            }
+        });
+        Log.i("inside compare", "check");
+
+    }
+    public void sortliststatusasc(){
+
+        Collections.sort(allData, new Comparator<ListItem>() {
+            @Override
+            public int compare(ListItem o1, ListItem o2) {
+                return o1.status.toLowerCase().compareTo(o2.status.toLowerCase());
+            }
+        });
+        Log.i("inside compare", "check");
+
+    }
+
+    public void sortliststatusdes(){
+
+        Collections.sort(allData, new Comparator<ListItem>() {
+            @Override
+            public int compare(ListItem o1, ListItem o2) {
+                return o2.status.toLowerCase().compareTo(o1.status.toLowerCase());
+            }
+        });
+        Log.i("inside compare", "check");
+
+    }
 }

@@ -1,20 +1,31 @@
 package com.vp6.anish.madguysmarketers;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 
 /**
@@ -48,11 +59,16 @@ public class AllListingFragment extends Fragment {
     public ArrayList<String> mData_imageurl;
     public ArrayList<ListItem>allData;
     private FloatingActionButton fab_map_all;
+    private FloatingActionButton fab_sort_all;
 
     public OnFragmentInteractionListener mListener;
     RecyclerView recyclerView;
     ListingAdapter listingAdapter;
     Context mcontext;
+    String searched="";
+    String typeofsort;
+    String typeoforder;
+
 
     public AllListingFragment() {
         // Required empty public constructor
@@ -143,6 +159,99 @@ public class AllListingFragment extends Fragment {
                 startActivity(intent3);
             }
         });
+
+        fab_sort_all = (FloatingActionButton)v.findViewById(R.id.fab_sort_all);
+        fab_sort_all.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Choose sorting type");
+
+                final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mcontext, android.R.layout.select_dialog_item);
+                arrayAdapter.add("Name");
+                arrayAdapter.add("Type");
+                arrayAdapter.add("Status");
+
+                builder.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        typeofsort = arrayAdapter.getItem(i);
+                        final int j = type(typeofsort);
+                        dialogInterface.dismiss();
+                        dialogInterface.cancel();
+
+                        final AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+                        builder.setTitle("Choose order");
+
+                        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mcontext, android.R.layout.select_dialog_item);
+                        arrayAdapter.add("Ascending");
+                        arrayAdapter.add("Descending");
+
+                        builder1.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                typeoforder = arrayAdapter.getItem(i);
+                                int k = type(typeoforder);
+                                if( j == 201){
+                                    if(k == 301){
+                                        listingAdapter.sortlistnameasc();
+                                        filter_results(searched);
+                                    }else if( k == 302){
+                                        listingAdapter.sortlistnamedes();
+                                        filter_results(searched);
+                                    }else{
+                                        dialogInterface.dismiss();
+                                        dialogInterface.cancel();
+                                    }
+                                }else if(j == 202){
+                                    if(k == 301){
+                                        listingAdapter.sortlisttypeasc();
+                                        filter_results(searched);
+                                    }else if( k == 302){
+                                        listingAdapter.sortlisttypedes();
+                                        filter_results(searched);
+                                    }else{
+                                        dialogInterface.dismiss();
+                                        dialogInterface.cancel();
+                                    }
+                                }else if(j == 203){
+                                    if(k == 301){
+                                        listingAdapter.sortliststatusasc();
+                                        filter_results(searched);
+                                    }else if( k == 302){
+                                        listingAdapter.sortliststatusdes();
+                                        filter_results(searched);
+                                    }else{
+                                        dialogInterface.dismiss();
+                                        dialogInterface.cancel();
+                                    }
+                                }else{
+                                    dialogInterface.dismiss();
+                                    dialogInterface.cancel();
+                                }
+                                dialogInterface.dismiss();
+                                dialogInterface.cancel();
+                            }
+                        });
+                        builder1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        builder1.show();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+            }
+        });
         recyclerView = (RecyclerView) v.findViewById(R.id.listView2);
        // listingAdapter = new ListingAdapter(mcontext,mData_imageurl,mData_name,mData_type,mData_id,mData_phone_number,mData_status,mData_address, AllListingFragment.this);
 
@@ -193,7 +302,27 @@ public class AllListingFragment extends Fragment {
     }
 
     public void filter_results(String Query){
-        listingAdapter.getFilter().filter(Query);
+        searched = Query;
+        listingAdapter.getFilter().filter(Query
+        );
+    }
+
+    public int type(String str) {
+        switch (str) {
+            case "Name":
+                return 201;
+            case "Type":
+                return 202;
+            case "Status":
+                return 203;
+            case "Ascending":
+                return 301;
+            case "Descending":
+                return 302;
+            default:
+                return 0;
+
+        }
     }
 
     @Override

@@ -155,6 +155,8 @@ public class ListingActivity extends AppCompatActivity
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+
+        Log.i("here", "Query submit");
         return false;
     }
 

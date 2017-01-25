@@ -7,7 +7,7 @@ import java.util.List;
  * Created by anish on 16-01-2017.
  */
 
-public class ListItem{
+public class ListItem {
     String name;
     String type;
     String id;
@@ -18,7 +18,7 @@ public class ListItem{
     String phone;
     String status;
 
-    public void setData(String name, String type, String id,String image_url,String lat,String lng,String address,String phone,String status) {
+    public void setData(String name, String type, String id, String image_url, String lat, String lng, String address, String phone, String status) {
         this.name = name;
         this.type = type;
         this.id = id;
@@ -32,18 +32,4 @@ public class ListItem{
     }
 
 
-
-    Comparator<ListItem> comparatorName = new Comparator<ListItem>() {
-        @Override
-        public int compare(ListItem o1, ListItem o2) {
-            return o1.name.compareToIgnoreCase(o2.name);
-        }
-    };
-
-    Comparator<ListItem> comparatorType = new Comparator<ListItem>() {
-        @Override
-        public int compare(ListItem o1, ListItem o2) {
-            return o1.status.compareTo(o2.status);
-        }
-    };
 }
