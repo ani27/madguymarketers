@@ -16,7 +16,7 @@ import java.util.List;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     // Database Name
     private static final String DATABASE_NAME = "ListingData";
@@ -29,8 +29,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_MYLISTING_TABLE = "CREATE TABLE IF NOT EXISTS mylisting( id TEXT PRIMARY KEY, name TEXT, type TEXT, number TEXT, status TEXT, lat TEXT, lng TEXT, address TEXT, imageurl TEXT)";
         String CREATE_ALLISTING_TABLE = "CREATE TABLE IF NOT EXISTS allisting( id TEXT PRIMARY KEY, name TEXT, type TEXT, number TEXT, status TEXT, lat TEXT, lng TEXT, address TEXT, imageurl TEXT)";
+        String CREATE_LOCATION_TABLE  = "CREATE TABLE IF NOT EXISTS location( datetime TEXT PRIMARY KEY, latitude TEXT, longitude TEXT)";
         db.execSQL(CREATE_MYLISTING_TABLE);
         db.execSQL(CREATE_ALLISTING_TABLE);
+        db.execSQL(CREATE_LOCATION_TABLE);
     }
 
     @Override
@@ -38,6 +40,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS mylisting");
         db.execSQL("DROP TABLE IF EXISTS allisting");
+        db.execSQL("DROP TABLE IF EXISTS location");
         // Create tables again
         onCreate(db);
     }

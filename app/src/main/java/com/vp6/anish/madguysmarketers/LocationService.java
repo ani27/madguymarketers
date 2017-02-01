@@ -1,6 +1,7 @@
 package com.vp6.anish.madguysmarketers;
 
 import android.Manifest;
+import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -9,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -36,6 +38,80 @@ public class LocationService extends Service {
     private LocationManager mLocationManager = null;
     private static final int LOCATION_INTERVAL = 5 * 60 * 1000;
     private static final float LOCATION_DISTANCE = 1f;
+
+    LocationListener[] mLocationListeners = new LocationListener[]{
+            new LocationListener(LocationManager.GPS_PROVIDER, LocationService.this),
+//            new LocationListener(LocationManager.NETWORK_PROVIDER, LocationService.this)
+    };
+
+
+
+
+    @Override
+    public IBinder onBind(Intent arg0) {
+        return null;
+    }
+
+
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.e(TAG, "onStartCommand");
+        super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
+    }
+
+    @Override
+    public void onCreate() {
+
+        Log.e(TAG, "onCreate");
+        initializeLocationManager();
+
+        try {
+            mLocationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE, mLocationListeners[0]);
+        } catch (java.lang.SecurityException ex) {
+            Log.i(TAG, "fail to request location update, ignore", ex);
+        } catch (IllegalArgumentException ex) {
+            Log.d(TAG, "gps provider does not exist " + ex.getMessage());
+        }
+
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.e(TAG, "onDestroy");
+        super.onDestroy();
+
+        if (mLocationManager != null) {
+            for (int i = 0; i < mLocationListeners.length; i++) {
+                try {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                        return;
+                    }
+                    mLocationManager.removeUpdates(mLocationListeners[i]);
+                } catch (Exception ex) {
+                    Log.i(TAG, "fail to remove location listners, ignore", ex);
+                }
+            }
+        }
+
+        Intent intent = new Intent("com.android.locservice");
+        sendBroadcast(intent);
+    }
+
+    private void initializeLocationManager() {
+        Log.e(TAG, "initializeLocationManager");
+        if (mLocationManager == null) {
+            mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        }
+    }
+
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
 
     private class LocationListener implements android.location.LocationListener {
         Location mLastLocation;
@@ -84,143 +160,161 @@ public class LocationService extends Service {
                 Long tsLong = System.currentTimeMillis() / 1000;
                 String ts = tsLong.toString();
                 datetimes.add(ts);
-//            Gson gson = new Gson();
-//          final  String latitude = gson.toJson(lats);
-//            String longitude = gson.toJson(lngs);
-//            String dateandtime = gson.toJson(datetimes);
-//
 
-                if (isNetworkAvailable() && lats.size() > 0) {
-
-                    Gson gson = new Gson();
-                    final String latitude = gson.toJson(lats);
-                    final String longitude = gson.toJson(lngs);
-                    final String dateandtime = gson.toJson(datetimes);
-                    final String last_latitude = lats.get(lats.size()-1);
-                    final String last_longitude = lngs.get(lngs.size()-1);
+                if (isNetworkAvailable()) {
 
 
-                    JsonObject json = new JsonObject();
-                    json.addProperty("lats", latitude);
-                    json.addProperty("lngs", longitude);
-                    json.addProperty("datetimes", dateandtime);
-                     Log.i("Latitude", latitude);
-                     Log.i("Longitude", longitude);
+                    Cursor cursor_loc = database.rawQuery("Select * from location", null);
+                    while (cursor_loc.moveToNext()) {
+                        datetimes.add(cursor_loc.getString(0));
+                        lats.add(cursor_loc.getString(1));
+                        lngs.add(cursor_loc.getString(2));
+                    }
+                    cursor_loc.close();
+                    if (lats.size() > 0) {
+                        Gson gson = new Gson();
+                        final String latitude = gson.toJson(lats);
+                        final String longitude = gson.toJson(lngs);
+                        final String dateandtime = gson.toJson(datetimes);
+                        final String last_latitude = lats.get(lats.size() - 1);
+                        final String last_longitude = lngs.get(lngs.size() - 1);
 
-                    Ion.with(service)
-                            .load("POST", getString(R.string.url).concat("synclocation/"))
-                            .setHeader("x-access-token", SessionManager.getjwt(service))
-                            .setJsonObjectBody(json)
-                            .asJsonObject()
-                            .setCallback(new FutureCallback<JsonObject>() {
-                                @Override
-                                public void onCompleted(Exception e, JsonObject result) {
+                        //Log.i("Latitude", latitude);
+                       // Log.i("Longitude", longitude);
+                        JsonObject json = new JsonObject();
+                        json.addProperty("lats", latitude);
+                        json.addProperty("lngs", longitude);
+                        json.addProperty("datetimes", dateandtime);
+                        Log.i("Latitude", latitude);
+                        Log.i("Longitude", longitude);
 
-                                    calls = getCallDetails();
-                                    if (calls != null && calls.size() > 0) {
+                        Ion.with(service)
+                                .load("POST", getString(R.string.url).concat("synclocation/"))
+                                .setHeader("x-access-token", SessionManager.getjwt(service))
+                                .setJsonObjectBody(json)
+                                .asJsonObject()
+                                .setCallback(new FutureCallback<JsonObject>() {
+                                    @Override
+                                    public void onCompleted(Exception e, JsonObject result) {
 
-                                        for (int i = 0; i < calls.size(); i++) {
-                                            JsonObject json_obj = new JsonObject();
-                                            json_obj.addProperty("phone", calls.get(i).get(0).toString());
-                                            json_obj.addProperty("datetime", calls.get(i).get(1).toString());
-                                            json_obj.addProperty("duration", calls.get(i).get(2).toString());
-                                            json_obj.addProperty("call_type", calls.get(i).get(3).toString());
+                                        lats = new ArrayList<>();
+                                        lngs = new ArrayList<>();
+                                        datetimes = new ArrayList<>();
+                                        database.execSQL("delete from location");
+                                        calls = getCallDetails();
+                                        if (calls != null && calls.size() > 0) {
+
+                                            for (int i = 0; i < calls.size(); i++) {
+                                                JsonObject json_obj = new JsonObject();
+                                                json_obj.addProperty("phone", calls.get(i).get(0).toString());
+                                                json_obj.addProperty("datetime", calls.get(i).get(1).toString());
+                                                json_obj.addProperty("duration", calls.get(i).get(2).toString());
+                                                json_obj.addProperty("call_type", calls.get(i).get(3).toString());
 
 
-                                            Ion.with(service)
-                                                    .load("POST", getString(R.string.url).concat("call/"))
-                                                    .setHeader("x-access-token", SessionManager.getjwt(service))
-                                                    .setJsonObjectBody(json_obj)
-                                                    .asJsonObject()
-                                                    .setCallback(new FutureCallback<JsonObject>() {
-                                                        @Override
-                                                        public void onCompleted(Exception e, JsonObject result) {
-                                                            calls = new ArrayList<ArrayList>();
-                                                        }
-                                                    });
+                                                Ion.with(service)
+                                                        .load("POST", getString(R.string.url).concat("call/"))
+                                                        .setHeader("x-access-token", SessionManager.getjwt(service))
+                                                        .setJsonObjectBody(json_obj)
+                                                        .asJsonObject()
+                                                        .setCallback(new FutureCallback<JsonObject>() {
+                                                            @Override
+                                                            public void onCompleted(Exception e, JsonObject result) {
+                                                                calls = new ArrayList<ArrayList>();
+                                                            }
+                                                        });
+                                            }
+
                                         }
+                                        Ion.with(service)
+                                                .load("POST", "http://madguylab.com/partner/auto_apps/update_member_location.php")
+                                                .setHeader("x-access-token", SessionManager.getjwt(service))
+                                                .setBodyParameter("user_id", SessionManager.getId(service))
+                                                .setBodyParameter("user_name", SessionManager.getName(service))
+                                                .setBodyParameter("latitude", last_latitude)
+                                                .setBodyParameter("longitude", last_longitude)
+                                                .setBodyParameter("user_number", SessionManager.getphonenumber(service))
+                                                .asString()
+                                                .setCallback(new FutureCallback<String>() {
+                                                    @Override
+                                                    public void onCompleted(Exception e, String result) {
+                                                        //calls = new ArrayList<ArrayList>();
+                                                        Log.i("Last location", "updated");
+
+                                                        int unique_int = 0;
+                                                        double d = 0.2;
+                                                        double R_earth = 6371;
+                                                        double r = (d / R_earth);
+                                                        double lat_min;// = Double.parseDouble(last_latitude) - r;
+                                                        double lat_max;// = Double.parseDouble(last_latitude) + r;
+                                                        double lng_delta = Math.asin(Math.sin(r) / Math.cos(Double.parseDouble(last_latitude)));
+                                                        // double lng_delta = r;
+                                                        double lng_min;// =  - lng_delta;
+                                                        double lng_max;/// = lng + lng_delta;
+
+
+                                                        lat_min = Double.parseDouble(last_latitude) - 0.009 * d;
+                                                        lat_max = Double.parseDouble(last_latitude) + 0.009 * d;
+                                                        lng_min = Double.parseDouble(last_longitude) - (0.009 * d / Math.cos(Double.parseDouble(last_latitude) * deg2rad(Math.PI / 180)));
+                                                        lng_max = Double.parseDouble(last_longitude) + (0.009 * d / Math.cos(Double.parseDouble(last_latitude) * deg2rad(Math.PI / 180)));
+
+                                                        if (lat_min > lat_max) {
+                                                            double temp = lat_max;
+                                                            lat_max = lat_min;
+                                                            lat_min = temp;
+                                                        }
+
+                                                        if (lng_min > lng_max) {
+                                                            double temp = lng_max;
+                                                            lng_max = lng_min;
+                                                            lng_min = temp;
+                                                        }
+
+                                                        Log.i("Latitude min", lat_min + "");
+                                                        Log.i("Latitude max", lat_max + "");
+                                                        Log.i("Longitude max", lng_max + "");
+                                                        Log.i("Longitude min", lng_min + "");
+
+                                                        Cursor cursor_all = database.rawQuery("Select * from allisting where (lat <= " + lat_max + " and lat >= " + lat_min + ") and (lng <= " + lng_max + " and lng >= " + lng_min + ") ", null);
+                                                        while (cursor_all.moveToNext()) {
+
+                                                            Log.i("Inside curseor", "Location");
+                                                            String id = (cursor_all.getString(0));
+                                                            String name = (cursor_all.getString(1));
+                                                            NotificationCompat.Builder builder;
+                                                            NotificationManager manager;
+                                                            builder = new NotificationCompat.Builder(service)
+                                                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                                                    .setContentTitle("MadGuys Marketers")
+                                                                    .setContentText("You are at " + name + " .Tap to add meeting");
+
+                                                            Intent gpsOptionsIntent = new Intent(service, MeetingActivity.class);
+                                                            gpsOptionsIntent.putExtra("id", id);
+                                                            PendingIntent contentIntent = PendingIntent.getActivity(service, unique_int, gpsOptionsIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                                            builder.setContentIntent(contentIntent);
+                                                            builder.setOngoing(false);
+                                                            manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                                            manager.notify(unique_int, builder.build());
+                                                            unique_int++;
+                                                        }
+
+                                                    }
+                                                });
 
                                     }
-                                    Ion.with(service)
-                                            .load("POST", "http://madguylab.com/partner/auto_apps/update_member_location.php")
-                                            .setHeader("x-access-token", SessionManager.getjwt(service))
-                                            .setBodyParameter("user_id", SessionManager.getId(service))
-                                            .setBodyParameter("user_name", SessionManager.getName(service))
-                                            .setBodyParameter("latitude",  last_latitude)
-                                            .setBodyParameter("longitude", last_longitude)
-                                            .setBodyParameter("user_number",SessionManager.getphonenumber(service))
-                                            .asString()
-                                            .setCallback(new FutureCallback<String>() {
-                                                @Override
-                                                public void onCompleted(Exception e, String result) {
-                                                    //calls = new ArrayList<ArrayList>();
-                                                    Log.i("Last location", "updated");
+                                });
 
-                                                    int unique_int = 0;
-                                                    double d = 0.2;
-                                                    double R_earth = 6371;
-                                                    double r = (d / R_earth);
-                                                    double lat_min;// = Double.parseDouble(last_latitude) - r;
-                                                    double lat_max;// = Double.parseDouble(last_latitude) + r;
-                                                    double lng_delta = Math.asin(Math.sin(r) / Math.cos(Double.parseDouble(last_latitude)));
-                                                    // double lng_delta = r;
-                                                    double lng_min;// =  - lng_delta;
-                                                    double lng_max;/// = lng + lng_delta;
+                    }
 
 
-                                                    lat_min = Double.parseDouble(last_latitude) - 0.009 * d;
-                                                    lat_max = Double.parseDouble(last_latitude) + 0.009 * d;
-                                                    lng_min = Double.parseDouble(last_longitude) - (0.009 * d / Math.cos(Double.parseDouble(last_latitude) * deg2rad(Math.PI / 180)));
-                                                    lng_max = Double.parseDouble(last_longitude) + (0.009 * d / Math.cos(Double.parseDouble(last_latitude) * deg2rad(Math.PI / 180)));
 
-                                                    if (lat_min > lat_max) {
-                                                        double temp = lat_max;
-                                                        lat_max = lat_min;
-                                                        lat_min = temp;
-                                                    }
-
-                                                    if (lng_min > lng_max) {
-                                                        double temp = lng_max;
-                                                        lng_max = lng_min;
-                                                        lng_min = temp;
-                                                    }
-
-                                                    Log.i("Latitude min", lat_min + "");
-                                                    Log.i("Latitude max", lat_max + "");
-                                                    Log.i("Longitude max", lng_max + "");
-                                                    Log.i("Longitude min", lng_min + "");
-
-                                                    Cursor cursor_all = database.rawQuery("Select * from allisting where (lat <= "+ lat_max +" and lat >= "+ lat_min +") and (lng <= "+ lng_max +" and lng >= "+lng_min+") ", null);
-                                                    while(cursor_all.moveToNext()){
-
-                                                        Log.i("Inside curseor","Location");
-                                                        String id =  (cursor_all.getString(0));
-                                                        String name = (cursor_all.getString(1));
-                                                        String type = (cursor_all.getString(2));
-                                                        NotificationCompat.Builder builder;
-                                                        NotificationManager manager;
-                                                        builder = new NotificationCompat.Builder(service)
-                                                                .setSmallIcon(R.mipmap.ic_launcher)
-                                                                .setContentTitle("MadGuys Marketers")
-                                                                .setContentText("You are at "+name+" .Tap to add meeting");
-
-                                                        Intent gpsOptionsIntent = new Intent(service, MeetingActivity.class );
-                                                        gpsOptionsIntent.putExtra("id", id);
-                                                        PendingIntent contentIntent = PendingIntent.getActivity(service, unique_int, gpsOptionsIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                                                        builder.setContentIntent(contentIntent);
-                                                        builder.setOngoing(false);
-                                                        manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                                                        manager.notify(unique_int, builder.build());
-                                                        unique_int++;
-                                                    }
-
-                                                }
-                                            });
-
-                                }
-                            });
-
-
+                } else {
+                    SQLiteStatement stmt = database.compileStatement("INSERT INTO location( datetime,latitude,longitude) VALUES (?,?,?)");
+                    stmt.bindString(1, ts);
+                    stmt.bindString(2, loc.getLatitude() + "");
+                    stmt.bindString(3, loc.getLongitude() + "");
+                    stmt.execute();
+                    stmt.clearBindings();
                     lats = new ArrayList<>();
                     lngs = new ArrayList<>();
                     datetimes = new ArrayList<>();
@@ -348,80 +442,5 @@ public class LocationService extends Service {
 
     }
 
-    LocationListener[] mLocationListeners = new LocationListener[]{
-            new LocationListener(LocationManager.GPS_PROVIDER, LocationService.this),
-//            new LocationListener(LocationManager.NETWORK_PROVIDER, LocationService.this)
-    };
-
-    @Override
-    public IBinder onBind(Intent arg0) {
-        return null;
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e(TAG, "onStartCommand");
-        super.onStartCommand(intent, flags, startId);
-        return START_STICKY;
-    }
-
-    @Override
-    public void onCreate() {
-        Log.e(TAG, "onCreate");
-        initializeLocationManager();
-
-        try {
-            mLocationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
-                    mLocationListeners[0]);
-        } catch (java.lang.SecurityException ex) {
-            Log.i(TAG, "fail to request location update, ignore", ex);
-        } catch (IllegalArgumentException ex) {
-            Log.d(TAG, "gps provider does not exist " + ex.getMessage());
-        }
-//        try {
-//            mLocationManager.requestLocationUpdates(
-//                    LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
-//                    mLocationListeners[1]);
-//        } catch (java.lang.SecurityException ex) {
-//            Log.i(TAG, "fail to request location update, ignore", ex);
-//        } catch (IllegalArgumentException ex) {
-//            Log.d(TAG, "network provider does not exist, " + ex.getMessage());
-//        }
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.e(TAG, "onDestroy");
-        super.onDestroy();
-
-        if (mLocationManager != null) {
-            for (int i = 0; i < mLocationListeners.length; i++) {
-                try {
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-                        return;
-                    }
-                    mLocationManager.removeUpdates(mLocationListeners[i]);
-                } catch (Exception ex) {
-                    Log.i(TAG, "fail to remove location listners, ignore", ex);
-                }
-            }
-        }
-
-        Intent intent = new Intent("com.android.locservice");
-        sendBroadcast(intent);
-    }
-
-    private void initializeLocationManager() {
-        Log.e(TAG, "initializeLocationManager");
-        if (mLocationManager == null) {
-            mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        }
-    }
-
-    private double deg2rad(double deg) {
-        return (deg * Math.PI / 180.0);
-    }
 
 }

@@ -1,5 +1,6 @@
 package com.vp6.anish.madguysmarketers;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -103,8 +104,11 @@ public class ListingActivity extends AppCompatActivity
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
 
-        Intent intent = new Intent(this, LocationService.class);
-        startService(intent);
+        if(!isMyServiceRunning(LocationService.class)) {
+            Intent intent = new Intent(this, LocationService.class);
+            startService(intent);
+        }
+        //Log.i("TOken", SessionManager.getjwt(this));
 
         myListingFragment = new MyListingFragment();
         allListingFragment = new AllListingFragment();
@@ -657,6 +661,26 @@ public class ListingActivity extends AppCompatActivity
 
     }
 
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                Log.i ("isMyServiceRunning?", true+"");
+                return true;
+            }
+        }
+        Log.i ("isMyServiceRunning?", false+"");
+        return false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopService(new Intent(this, LocationService.class));
+        Log.i("MAINACT", "onDestroy!");
+        super.onDestroy();
+
+    }
 
 }
 
